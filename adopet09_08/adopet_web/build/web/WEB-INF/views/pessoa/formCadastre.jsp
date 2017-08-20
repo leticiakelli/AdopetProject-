@@ -30,105 +30,116 @@
         <script src="<c:url value="resource/js/html5shiv.min.js"/>"</script>
           <script src="<c:url value="resource/js/respond.min.js"/>"</script>
         <![endif]-->
-    <!-- Fonts -->
-    <link href="<c:url value="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic"/>" rel="stylesheet" type="text/css">
+        <!-- Fonts -->
+        <link href="<c:url value="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"/>" rel="stylesheet" type="text/css">
+        <link href="<c:url value="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic"/>" rel="stylesheet" type="text/css">
 
     </head>
     <body>
-        
-            
-            
-                
-        
-       <div class="container">
-           <c:if test="${empty anuncio}">
+
+
+
+
+
+        <div class="container">
+            <c:if test="${empty anuncio}">
                 <h1>Novo Cadastro</h1>
             </c:if>
 
             <c:if test="${not empty anuncio}">
                 <h1>Editar Cadastro</h1>
             </c:if>
-                <form method="post">
-               <div class="jumbotron" left="30px" top="20px" rigth="30px">
+            <form method="post">
+                <div class="jumbotron" left="30px" top="20px" rigth="30px">
 
-                     <div class="row">
-                         
-                           <div class="col-xs-5">
-                                    <label for="nome">Nome</label>
-                                    <input type="text" class="form-control" name="formnome" id="nome" value = "${pessoa.nome}"/>
-                            </div>
-                           
-                            
-                                <div class="col-xs-5">
-                                    <label for="nome">CPF</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                 
-                                 <div class="col-xs-5">
-                                    <label for="nome">Logradouro</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">numero</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">Complemento</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">Cidade</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">Bairro</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">UF</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">Telefone</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">Celular</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                 
-                                  <div class="col-xs-5">
-                                    <label for="nome">Foto</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                                
-                                 
-                                 <div class="col-xs-3">
-                                     <br>
-                                 <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
-                                 </div>
-                                 
-                                 
-                                 <div class="col-xs-3 ">
-                                     <br>
-                                     <a class="btn btn-default" href="<c:url value="/pessoa"/>">Cancelar Cadastro</a>
-                                 </div>
-                     </div>
-               </div>            
-          
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="<c:url value="/resources/js/jquery.js"/>"</script>
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
+                    <div class="row">
+
+                        <div class="col-xs-5">
+                            <label for="nome">Nome</label>
+                            <input type="text" class="form-control" name="nome" id="nome" required="true" value = "${pessoa.nome}"/>
+                        </div>
+
+
+                        <div class="col-xs-5">
+                            <label for="cpf">CPF</label>
+                            <input type="text" class="form-control" name="cpf" id="nome" value = "${pessoa.cpf}"/>
+                        </div>
+
+
+                        <div class="col-xs-5">
+                            <label for="logradouro">Logradouro</label>
+                            <input type="text" class="form-control" name="logradouro" id="nome" value = "${pessoa.logradouro}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="numero">numero</label>
+                            <input type="text" class="form-control" name="numero" id="nome" value = "${pessoa.numero}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="complemento">Complemento</label>
+                            <input type="text" class="form-control" name="complemento" id="nome" value = "${pessoa.complemento}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="cidade">Cidade</label>
+                            <input type="text" class="form-control" name="cidade" id="nome" value = "${pessoa.cidade}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="bairro">Bairro</label>
+                            <input type="text" class="form-control" name="bairro" id="nome" value = "${pessoa.bairro}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="uf">UF</label>
+                            <input type="text" class="form-control" name="uf" id="uf" value = "${pessoa.uf}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="telefone">Telefone</label>
+                            <input type="text" class="form-control" name="telefone" id="telefone" value = "${pessoa.telefone}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="celular">Celular</label>
+                            <input type="text" class="form-control" name="celular" id="celular" value = "${pessoa.celular}"/>
+                        </div>
+                        
+                        <div class="col-xs-5">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" name="email" id="email" value = "${pessoa.email}"/>
+                        </div>
+                        
+                        <div class="col-xs-5">
+                            <label for="senha">Senha</label>
+                            <input type="password" class="form-control" name="senha" id="senha" value = "${pessoa.senha}"/>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="foto">Foto</label>
+                            <input type="text" class="form-control" name="foto" id="foto" value = "${pessoa.foto}"/>
+                        </div>
+
+
+                        <div class="col-xs-3">
+                            <br>
+                            <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
+                        </div>
+
+
+                        <div class="col-xs-3 ">
+                            <br>
+                            <a class="btn btn-default" href="<c:url value="/pessoa"/>">Cancelar Cadastro</a>
+                        </div>
+                    </div>
+                </div>  
+            </form>
+
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+            <script src="<c:url value="/resources/js/jquery.js"/>"</script>
+            <!-- Include all compiled plugins (below), or include individual files as needed -->
+            <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
     </body>
 
 </html>

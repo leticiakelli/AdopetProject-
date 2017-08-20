@@ -3,7 +3,9 @@ package adopet.controller;
 import adopet.model.entity.Usuario;
 import adopet.model.service.UsuarioService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -40,11 +42,28 @@ public class loginController {
         Usuario usuario = new Usuario();
         usuario.setEmail(email);
         usuario.setSenha(senha);
+
         if (usuario.getEmail() != null
                 && !usuario.getEmail().isEmpty() && usuario.getSenha() != null
                 && !usuario.getSenha().isEmpty()) {
-            HttpSession session = request.getSession();
-            session.setAttribute("usuarioLogado", email);
+            UsuarioService usuarioService = new UsuarioService();
+            Map<Long, Object> criteria = new HashMap<>();
+            criteria.put(1L, email);
+            criteria.put(2L, senha);
+            try {
+                List<Usuario> usuarioList = usuarioService.readByCriteria(criteria);
+
+                for (Usuario usuario1 : usuarioList) {
+                    if (usuario1.getEmail().equals(email) && usuario1.getSenha().equals(senha)) {
+                        HttpSession session = request.getSession();
+                        session.setAttribute("usuarioLogado", email);
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         return mv;
 

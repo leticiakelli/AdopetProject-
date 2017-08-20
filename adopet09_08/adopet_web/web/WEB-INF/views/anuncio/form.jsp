@@ -70,7 +70,7 @@
                                 <div class="col-xs-5">
                                     <label for="nome">Raça</label>
                                     <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                            </div>
+                                 </div>
                        
                         
                         
@@ -147,8 +147,8 @@
                     </div>
                             </br>
                         </br>
-                        <button type="submit" class="btn btn-default">Confirmar</button>    
-                        <a class="btn btn-success" href="<c:url value="/anuncio"/>">Cancelar</a>
+                        <button type="submit" class="btn btn-info">Confirmar</button>    
+                        <a class="btn btn-default" href="<c:url value="/anuncio"/>">Cancelar</a>
                  
                </div>
                  </div>

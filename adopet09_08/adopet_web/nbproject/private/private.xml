@@ -2,6 +2,13 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/letic/Documents/Projeto_Interdisciplinar/adopet09_08/adopet_web/web/WEB-INF/views/pessoa/formCadastre.jsp</file>
+            <file>file:/C:/Users/letic/Documents/Projeto_Interdisciplinar/adopet09_08/adopet_web/web/WEB-INF/views/blog/blog.jsp</file>
+            <file>file:/C:/Users/letic/Documents/Projeto_Interdisciplinar/adopet09_08/adopet_web/web/index.jsp</file>
+            <file>file:/C:/Users/letic/Documents/Projeto_Interdisciplinar/adopet09_08/adopet_web/src/java/adopet/controller/loginController.java</file>
+            <file>file:/C:/Users/letic/Documents/Projeto_Interdisciplinar/adopet09_08/adopet_web/web/WEB-INF/views/login/form.jsp</file>
+            <file>file:/C:/Users/letic/Documents/Projeto_Interdisciplinar/adopet09_08/adopet_web/src/java/adopet/controller/blogController.java</file>
+        </group>
     </open-files>
 </project-private>

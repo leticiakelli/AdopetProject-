@@ -41,7 +41,7 @@
             
             <h1>Anúncios</h1>
             <br/>
-            <a class="btn btn-success" href="<c:url value="/anuncio/novo"/>">Adicionar</a>
+            <a class="btn btn-info" href="<c:url value="/anuncio/novo"/>">Adicionar</a>
             <br/>
             <br/>
             </div>

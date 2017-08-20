@@ -12,7 +12,7 @@
     <meta name="author" content="">
 
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <title>AdoCão</title>
+        <title>AdoPet</title>
 
         <!-- Bootstrap -->
         <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet">
@@ -38,6 +38,15 @@
     <div class="brand">Business Casual</div>
     <div class="address-bar">3481 Melrose Place | Beverly Hills, CA 90210 | 123.456.7890</div>
 
+    <c:if test="${not empty usuarioLogado}">
+        <div id="logado">
+            <h1>O usuário logado é ${usuarioLogado}</h1>
+            <a type="button" class="btn btn-default" href="<c:url value="/logout"></c:url>">
+                Logout
+            </a>
+        </div>
+    </c:if>
+    
     <!-- Navigation -->
     <nav class="navbar navbar-default" role="navigation">
         <div class="container">

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class pessoaController {
- @RequestMapping(value = "/pessoa", method = RequestMethod.GET) 
+ @RequestMapping(value = "/cadastro", method = RequestMethod.GET) 
     public ModelAndView read() {
         ModelAndView mv = new ModelAndView("/pessoa/formCadastre");
         

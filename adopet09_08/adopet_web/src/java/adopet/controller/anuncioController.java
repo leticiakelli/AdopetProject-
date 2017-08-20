@@ -5,6 +5,7 @@ import adopet.model.entity.Anuncio;
 import adopet.model.entity.Especie;
 import adopet.model.service.AnuncioService;
 import adopet.model.service.EspecieService;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,54 @@ public class anuncioController {
         }       
         return mv;
     }
+    
+      @RequestMapping(value = "/adocao", method = RequestMethod.GET) 
+    public ModelAndView createAdocao() {
+        ModelAndView mv = new ModelAndView("/anuncio/listAdocao");
+        AnuncioService service= new AnuncioService();
+        
+          try {
+            List<Anuncio> listAnuncios= service.readByCriteria(null);  
+             if(!listAnuncios.isEmpty()) {
+                 List<Anuncio> listAdocao= new ArrayList<>();
+                 for (Anuncio anuncio : listAnuncios) {
+                     if(anuncio.getTipo().equals("Adoção")){
+                         listAdocao.add(anuncio);
+                     }
+                 }
+                 mv.addObject("anuncioList",listAdocao);
+             }
+ 
+             
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+        return mv;
+    }   
+    
+      @RequestMapping(value = "/perdido", method = RequestMethod.GET) 
+    public ModelAndView createPerdidos() {
+        ModelAndView mv = new ModelAndView("/anuncio/listPerdidos");
+         AnuncioService service= new AnuncioService();
+        
+          try {
+            List<Anuncio> listAnuncios= service.readByCriteria(null);  
+             if(!listAnuncios.isEmpty()) {
+                 List<Anuncio> listPerdidos= new ArrayList<>();
+                 for (Anuncio anuncio : listAnuncios) {
+                     if(anuncio.getTipo().equals("Perdido")){
+                         listPerdidos.add(anuncio);
+                     }
+                 }
+                 mv.addObject("anuncioList",listPerdidos);
+             }
+ 
+             
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+        return mv;
+    }   
     
     @RequestMapping(value = "/anuncio/{id}/ver}", method = RequestMethod.GET)
     public ModelAndView showFormForVer(){
@@ -66,7 +115,12 @@ public class anuncioController {
         anuncio.setPorte(porte);
         anuncio.setRaca(raca);
         anuncio.setSexo(sexo);
-       anuncio.setFoto_id(Long.parseLong("foto"));
+        //Aqui agente vai precisar pegar o file em bytes
+        //salvar arquivo em um diretorio
+        //Criar entidade imagem entidade
+        //salvar no banco Mock 
+        //inserir id da imagem
+       //anuncio.setFoto_id(Long.parseLong("foto"));
        anuncio.setPessoaAnuncianteCpf(especie);
        anuncio.getPessoaAdotanteCpf();
         

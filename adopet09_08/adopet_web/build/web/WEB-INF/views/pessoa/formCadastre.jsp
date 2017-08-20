@@ -56,8 +56,8 @@
                          
                            <div class="col-xs-5">
                                     <label for="nome">Nome</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${pessoa.nome}"/>
-                                 </div>
+                                    <input type="text" class="form-control" name="formnome" id="nome" value = "${pessoa.nome}"/>
+                            </div>
                            
                             
                                 <div class="col-xs-5">
@@ -110,6 +110,20 @@
                                     <label for="nome">Foto</label>
                                     <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
                                  </div>
+                                
+                                 
+                                 <div class="col-xs-3">
+                                     <br>
+                                 <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
+                                 </div>
+                                 
+                                 
+                                 <div class="col-xs-3 ">
+                                     <br>
+                                     <a class="btn btn-default" href="<c:url value="/pessoa"/>">Cancelar Cadastro</a>
+                                 </div>
+                     </div>
+               </div>            
           
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="<c:url value="/resources/js/jquery.js"/>"</script>

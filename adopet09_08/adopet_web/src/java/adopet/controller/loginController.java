@@ -3,6 +3,7 @@ package adopet.controller;
 import adopet.model.entity.Usuario;
 import adopet.model.service.UsuarioService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,15 +38,46 @@ public class loginController {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         ModelAndView mv = new ModelAndView("redirect:/adocao");
 
+//        Usuario usuario = new Usuario();
+//        usuario.setEmail(email);
+//        usuario.setSenha(senha);
+//        if (usuario.getEmail() != null
+//                && !usuario.getEmail().isEmpty() && usuario.getSenha() != null
+//                && !usuario.getSenha().isEmpty()) {
+//            HttpSession session = request.getSession();
+//            session.setAttribute("usuarioLogado", email);
+//        }
+        UsuarioService usuarioService = new UsuarioService();
         Usuario usuario = new Usuario();
         usuario.setEmail(email);
         usuario.setSenha(senha);
         if (usuario.getEmail() != null
                 && !usuario.getEmail().isEmpty() && usuario.getSenha() != null
                 && !usuario.getSenha().isEmpty()) {
-            HttpSession session = request.getSession();
-            session.setAttribute("usuarioLogado", email);
+            List<Usuario> listUsuario = null;
+            //verifica se usuarios existentes
+            try {
+                listUsuario = usuarioService.readByCriteria(new HashMap<>());
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+            //seta usuario na sessao
+            if (listUsuario != null && !listUsuario.isEmpty()) {
+                for (Usuario usuarioSalvo : listUsuario) {
+                    if (usuarioSalvo.getEmail().equals(usuario.getEmail())
+                            && usuarioSalvo.getSenha().equals(usuario.getSenha())) {
+                        //seta ususario na sessao
+                        HttpSession session = request.getSession();
+                        session.setAttribute("usuarioLogado", email);
+                        break;
+                    }
+                }
+
+            }
+
         }
+
         return mv;
 
     }
@@ -86,5 +118,6 @@ public class loginController {
         return mv;
 
     }
+
 
 }

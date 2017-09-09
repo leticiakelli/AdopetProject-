@@ -36,7 +36,7 @@
 
     </head>
     <body>
-      
+        <jsp:include page = "/WEB-INF/views/componentes/menu.jsp" />
         <div class ="container">
             
             <h1>Anúncios</h1>

@@ -30,132 +30,124 @@
         <script src="<c:url value="resource/js/html5shiv.min.js"/>"</script>
           <script src="<c:url value="resource/js/respond.min.js"/>"</script>
         <![endif]-->
-    <!-- Fonts -->
-    <link href="<c:url value="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic"/>" rel="stylesheet" type="text/css">
+        <!-- Fonts -->
+        <link href="<c:url value="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"/>" rel="stylesheet" type="text/css">
+        <link href="<c:url value="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic"/>" rel="stylesheet" type="text/css">
 
     </head>
     <body>
-        
-            
-            
-                
-        
-       <div class="container">
-           <c:if test="${empty anuncio}">
+
+        <div class="container">
+            <c:if test="${empty anuncio}">
                 <h1>Novo Anuncio</h1>
             </c:if>
 
             <c:if test="${not empty anuncio}">
                 <h1>Editar anuncio</h1>
             </c:if>
-                <form method="post">
-               <div class="jumbotron" left="30px" top="20px" rigth="30px">
+            <form method="post"enctype="multipart/form-data">
+                <div class="jumbotron" left="30px" top="20px" rigth="30px">
 
-                     <div class="row">
-                         
+                    <div class="row">
+
+                        <div class="col-xs-5">
+                            <label for="tipo">Tipo Anuncio</label>
+
+                            <select class="form-control" id="tipo" 
+                                    name="tipo">
+
+                                <option value="">Selecione...</option>
+                                <option <c:if test="${anuncio.tipo eq 'Adoção'}">selected</c:if>value="Adoção">Adoção</option>
+                                <option <c:if test="${anuncio.tipo eq 'Perdido'}">selected</c:if>value="Perdido">Perdido</option>
+                                </select>
+                            </div>
+
                             <div class="col-xs-5">
-                                <label for="tipo">Tipo Anuncio</label>
-
-                                <select class="form-control" id="tipo" 
-                                        name="tipo">
-
-                                    <option value="">Selecione...</option>
-                                    <option <c:if test="${anuncio.tipo eq 'Adoção'}">selected</c:if>value="Adoção">Adoção</option>
-                                    <option <c:if test="${anuncio.tipo eq 'Perdido'}">selected</c:if>value="Perdido">Perdido</option>
-                                    </select>
-                                </div>
-                           
-                            
-                                <div class="col-xs-5">
-                                    <label for="nome">Raça</label>
-                                    <input type="text" class="form-control" name="nome" id="nome" value = "${anuncio.nome}"/>
-                                 </div>
-                       
+                                <label for="nome">Raça</label>
+                                <input type="text" class="form-control" name="raca" id="nome" value = "${anuncio.raca}"/>
+                        </div>
                         
-                        
-                       
-                            <div class="col-xs-5">
-                                <label for="especie">Espécie</label>
+                        <div class="col-xs-5">
+                            <label for="especie">Espécie</label>
 
-                                <select class="form-control" id="especie" 
-                                        name="especie">
+                            <select class="form-control" id="especie" 
+                                    name="especie">
 
-                                    <option value="">Selecione...</option>
-                                    <option <c:if test="${anuncio.especie eq 'Cão'}">selected</c:if>value="Cão">Cão</option>
-                                    <option <c:if test="${anuncio.especie eq 'Gato'}">selected</c:if>value="Gato">Gato</option>
+                                <option value="">Selecione...</option>
+                                <option <c:if test="${anuncio.especie eq 'Cão'}">selected</c:if>value="Cão">Cão</option>
+                                <option <c:if test="${anuncio.especie eq 'Gato'}">selected</c:if>value="Gato">Gato</option>
 
-                                    </select>
-                                </div>
-                            
+                                </select>
+                            </div>
+
                             </br>
                             </br>
-                            
-                               
-                                <div class="col-xs-5">
-                                    <label for="sexo">Sexo</label>
 
-                                    <select class="form-control" id="sexo" 
-                                            name="sexo">
 
-                                        <option value="">Selecione...</option>
-                                        <option <c:if test="${anuncio.sexo eq 'Macho'}">selected</c:if>value="Macho">Macho</option>
-                                    <option <c:if test="${anuncio.sexo eq 'Fêmea'}">selected</c:if>value="Fêmea">Fêmea</option>
-                                    </select>
-                                </div>  
-                            
-                            
-                            
-                                <div class="col-xs-5">
-                                    <label for="porte">Porte</label>
+                            <div class="col-xs-5">
+                                <label for="sexo">Sexo</label>
 
-                                    <select class="form-control" id="porte" 
-                                            name="porte">
-                                        
-                                        <option value="">Selecione...</option>
-                                        <option <c:if test="${anuncio.porte eq 'Pequeno'}">selected</c:if>value="Pequeno">Pequeno</option>
-                                    <option <c:if test="${anuncio.porte eq 'Medio'}">selected</c:if>value="Medio">Médio</option>
-                                    <option <c:if test="${anuncio.porte eq 'Grande'}">selected</c:if>value="Grande">Grande</option>
-                                    </select>
-                                </div> 
-                            
-                            
-                             
-                                <div class="col-xs-5">
-                                    <label for="idade">idade</label>
-                                    <input type="text" class="form-control" name="idade" id="idade" value = "${anuncio.idade}"/>
-                            </div>
-                        
+                                <select class="form-control" id="sexo" 
+                                        name="sexo">
+
+                                    <option value="">Selecione...</option>
+                                    <option <c:if test="${anuncio.sexo eq 'Macho'}">selected</c:if>value="Macho">Macho</option>
+                                <option <c:if test="${anuncio.sexo eq 'Fêmea'}">selected</c:if>value="Fêmea">Fêmea</option>
+                                </select>
+                            </div>  
+
+
+
+                            <div class="col-xs-5">
+                                <label for="porte">Porte</label>
+
+                                <select class="form-control" id="porte" 
+                                        name="porte">
+
+                                    <option value="">Selecione...</option>
+                                    <option <c:if test="${anuncio.porte eq 'Pequeno'}">selected</c:if>value="Pequeno">Pequeno</option>
+                                <option <c:if test="${anuncio.porte eq 'Medio'}">selected</c:if>value="Medio">Médio</option>
+                                <option <c:if test="${anuncio.porte eq 'Grande'}">selected</c:if>value="Grande">Grande</option>
+                                </select>
+                            </div> 
+
+
+
+                            <div class="col-xs-5">
+                                <label for="idade">idade</label>
+                                <input type="text" class="form-control" name="idade" id="idade" value = "${anuncio.idade}"/>
+                        </div>
+
                         </br>
                         </br>
-                        
-                        
-                            <div class="col-xs-5">
-                                <label for="caracteristica">Caracteristicas</label>
 
-                                <textarea class="form-control" rows="3" name="caracteristica" id="caracteristica" value = "${anuncio.caracteristica}"></textarea>
-                            </div>
-                            
-                            <div class="col-xs-5">
-                                <label for="caracteristica">Foto</label>
 
-                                <textarea class="form-control" rows="3" name="caracteristica" id="caracteristica" value = "${anuncio.caracteristica}"></textarea>
-                            </div>
-                        
+                        <div class="col-xs-5">
+                            <label for="caracteristica">Caracteristicas</label>
+
+                            <textarea class="form-control" rows="3" name="caracteristica" id="caracteristica" value = "${anuncio.caracteristica}"></textarea>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <label for="file">Foto</label>
+                            <input type="file"  class="form-control" name="foto" id="foto" value = "${anuncio.foto}"/>
+                            <p class="help-block">Realizar upload de um arquivo jpeg.</p>
+                        </div>
+
                         </br>
                         </br>
                     </div>
-                            </br>
-                        </br>
-                        <button type="submit" class="btn btn-info">Confirmar</button>    
-                        <a class="btn btn-default" href="<c:url value="/anuncio"/>">Cancelar</a>
-                 
-               </div>
-                 </div>
-       
-                      
+                    </br>
+                    </br>
+                    <button type="submit" class="btn btn-info">Confirmar</button>    
+                    <a class="btn btn-default" href="<c:url value="/anuncio"/>">Cancelar</a>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+                </div>
+        </div>
+
+
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="<c:url value="/resources/js/jquery.js"/>"</script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>

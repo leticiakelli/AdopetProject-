@@ -1,14 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<%-- 
-    Document   : index
-    Created on : 30/05/2017, 22:07:55
-    Author     : Alunos
---%>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
     <head>

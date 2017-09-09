@@ -3,15 +3,16 @@ package adopet.model.service;
 import adopet.model.base.service.BaseUsuarioService;
 import adopet.model.entity.Usuario;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UsuarioService implements BaseUsuarioService{
+public class UsuarioService implements BaseUsuarioService {
 
     private static Long sequence = 0L;
     private static List<Usuario> entityList = new ArrayList<>();
-    
-     @Override
+
+    @Override
     public Usuario login(String email, String password) throws Exception {
         Usuario entity = null;
         for (Usuario aux : entityList) {
@@ -22,7 +23,8 @@ public class UsuarioService implements BaseUsuarioService{
         }
         return entity;
     }
- @Override
+
+    @Override
     public void create(Usuario entity) throws Exception {
         entity.setId(++sequence);
         entityList.add(entity);
@@ -66,4 +68,25 @@ public class UsuarioService implements BaseUsuarioService{
         }
     }
 
+    public Boolean validateForCreate(Usuario usuario) {
+        try {
+            //varre e procura algum usuario com email e senha iguais
+            List<Usuario> usuarioList = readByCriteria(new HashMap<Long, Object>());
+            for (Usuario usuarioSalvo : usuarioList) {
+                if (usuario.getEmail().equals(usuarioSalvo.getEmail())
+                        && usuario.getSenha().equals(usuarioSalvo.getSenha())) {
+                    //Se encontrar retorna falsp
+                    return false;
+
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        //caso nao encontre nenhum erro ou suaurio com emaul e senha iguais ele retorna verdadeiro
+        return true;
+
+    }
 }

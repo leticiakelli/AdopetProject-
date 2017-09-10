@@ -3,17 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/resources/css/estilo.css</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/WEB-INF/views/anuncio/listAdocao.jsp</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/WEB-INF/views/anuncio/listPerdidos.jsp</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/controller/loginController.java</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/resources/css/business-casual.css</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/WEB-INF/views/componentes/menu.jsp</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/controller/anuncioController.java</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/controller/HomeController.java</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/WEB-INF/views/anuncio/list.jsp</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/controller/PessoaController.java</file>
-            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/WEB-INF/views/pessoa/formCadastre.jsp</file>
+            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/utils/TipoAnuncioEnum.java</file>
+            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/web/WEB-INF/views/anuncio/form.jsp</file>
+            <file>file:/C:/Leticia/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/controller/AnuncioController.java</file>
         </group>
     </open-files>
 </project-private>

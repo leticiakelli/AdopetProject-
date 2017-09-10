@@ -8,16 +8,16 @@ public class Anuncio extends BaseEntity{
     private  String sexo;
     private  String porte;
     private  String raca;
-    private  String recompensa;
     private  String caracteristicas;
     private  String tipo;
     private  String status;
     private  Integer idade;
-    private  String local;
     private  Long foto_id;
     private  Long especie_id;
     private  String pessoaAdotanteCpf;
     private  String pessoaAnuncianteCpf;
+    private  String recompensa;
+    private  String local;
     
 
     public Timestamp getData_hora() {

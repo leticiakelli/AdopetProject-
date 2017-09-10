@@ -66,7 +66,7 @@
                                 <label for="nome">Raça</label>
                                 <input type="text" class="form-control" name="raca" id="nome" value = "${anuncio.raca}"/>
                         </div>
-                        
+
                         <div class="col-xs-5">
                             <label for="especie">Espécie</label>
 
@@ -139,7 +139,18 @@
                     </div>
                     </br>
                     </br>
-                    <button type="submit" class="btn btn-info">Confirmar</button>    
+                    <div id="formPerdido" style="display: none">
+
+                        <div class="col - xs - 5">
+                            <label for="recompensa">Recompensa</label>
+                            <input type="text" class="form - control" name="recompensa" id="recompensa" value = "${anuncio.recompensa}" />
+                        </div>
+                        <div class="col - xs - 5">
+                            <label for="local">Local</label>
+                            <input type="text" class="form - control" name="local" id="local" value = "${anuncio.local}" />
+                        </div>
+                    </div>
+                        <button id="buttonConfirmaAnuncio" type="submit" class="btn btn-info">Confirmar</button>    
                     <a class="btn btn-default" href="<c:url value="/anuncio"/>">Cancelar</a>
 
                 </div>
@@ -148,9 +159,31 @@
 
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="<c:url value="/resources/js/jquery.js"/>"</script>
+        <script src="<c:url value="/resources/js/jquery.js"/>"></script>
+        <script type="text/javascript">
+            $("#tipo").change(function () {
+                console.log("ativou funcao");
+                var selectBox = document.getElementById("tipo");
+                var tipo = selectBox.options[selectBox.selectedIndex].value;
+                console.log(tipo);
+                var formDiv = document.getElementById("formPerdido");
+                if (tipo === "Perdido") {
+                    formDiv.style.display = 'block';
+                } else {
+                    formDiv.style.display = 'none';
+                }
+            });
+            
+            $("#buttonConfirmaAnuncio").click(function (){
+               var formDiv = document.getElementById("formPerdido");
+               formDiv.style.display = 'block';
+            });
+
+        </script>
+
+
         <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
+        <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
     </body>
 
 </html>

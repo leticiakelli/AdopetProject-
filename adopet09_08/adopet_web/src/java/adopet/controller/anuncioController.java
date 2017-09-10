@@ -75,18 +75,32 @@ public class anuncioController {
     @RequestMapping(value = "/perdido", method = RequestMethod.GET)
     public ModelAndView createPerdidos() {
         ModelAndView mv = new ModelAndView("/anuncio/listPerdidos");
-        AnuncioService service = new AnuncioService();
+       AnuncioService service = new AnuncioService();
 
         try {
+            //Recupera a foto da base de dados
+            FotoService fotoService = new FotoService();
             List<Anuncio> listAnuncios = service.readByCriteria(null);
+            List<String> listFotoAnuncios = new ArrayList<>();
             if (!listAnuncios.isEmpty()) {
-                List<Anuncio> listPerdidos = new ArrayList<>();
+                List<Anuncio> listAdocao = new ArrayList<>();
                 for (Anuncio anuncio : listAnuncios) {
                     if (anuncio.getTipo().equals("Perdido")) {
-                        listPerdidos.add(anuncio);
+                        listAdocao.add(anuncio);
+                        //Recupera a entidade Foto
+                        Foto foto = fotoService.readById(anuncio.getFoto_id());
+                        //Pega o arquivo no diretório
+                        byte[] byteArrayFoto = IOUtils.readFile(foto.getNome());
+                        //Converte para o padrão Base64 de imagens
+                        byte[] byteArrayFotoBase64 = Base64.getEncoder().encode(byteArrayFoto);
+                        //Insere na lista
+                        if (byteArrayFotoBase64 != null) {
+                            listFotoAnuncios.add(new String(byteArrayFotoBase64));
+                        }
                     }
                 }
-                mv.addObject("anuncioList", listPerdidos);
+                mv.addObject("anuncioList", listAdocao);
+                mv.addObject("anuncioImageList", listFotoAnuncios);
             }
 
         } catch (Exception e) {

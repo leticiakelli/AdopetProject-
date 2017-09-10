@@ -66,7 +66,7 @@
                             <p>${anuncio.caracteristicas}</p>
                             <a href="#" class="btn btn-default btn-lg">Read More</a>
                             <hr>
-                            <img src="data:image/jpeg;base64,${anuncioImageList[loop.index]}" style="height:300px;width:300px"/>
+                            <img src="data:image/jpeg;base64,${anuncioImageList[loop.index]}" style="height:200px;width:300px"/>
                         </div>
                     </c:forEach>
                     <div class="col-lg-12 text-center">

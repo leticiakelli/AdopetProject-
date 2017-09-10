@@ -1,14 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<%-- 
-    Document   : index
-    Created on : 30/05/2017, 22:07:55
-    Author     : Alunos
---%>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -36,10 +28,6 @@
 
     </head>
     <body>
-
-
-
-
 
         <div class="container">
             <c:if test="${empty anuncio}">
@@ -128,15 +116,10 @@
                             <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
                         </div>
 
+                      
                         <div class="col-xs-3 ">
                             <br>
-                            <a class="btn btn-info" href="<c:url value="/login"/>">Logar-se</a>
-                        </div>
-
-                        
-                        <div class="col-xs-3 ">
-                            <br>
-                            <a class="btn btn-default" href="<c:url value="/pessoa"/>">Cancelar Cadastro</a>
+                            <a class="btn btn-default" href="<c:url value="/home"/>">Cancelar Cadastro</a>
                         </div>
                     </div>
                 </div>     

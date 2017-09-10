@@ -85,7 +85,7 @@ public class loginController {
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ModelAndView logout() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        ModelAndView mv = new ModelAndView("redirect:/blog");
+        ModelAndView mv = new ModelAndView("redirect:/home");
         HttpSession session = request.getSession();
         session.removeAttribute("usuarioLogado");
 

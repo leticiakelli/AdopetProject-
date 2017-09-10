@@ -17,7 +17,8 @@ and open the template in the editor.
 
         <!-- Business Casual -->
         <link href="<c:url value="/resources/css/business-casual.css"/>" rel="stylesheet">
-
+        <!--Estilo css -->
+        <link href="<c:url value="/resources/css/estilo.css"/>" rel="stylesheet">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -32,14 +33,14 @@ and open the template in the editor.
     <body>
 
         <div class="brand">AdoPet</div>
-        <div class="address-bar">Adote essa idéia</div>
+        <!--<div class="address-bar">Adote essa idéia</div>-->
         <!--informações do usuario logado-->
-        <c:if test="${not empty usuarioLogado}">
+       <!-- <c:if test="${not empty usuarioLogado}">
             <div id="logado">
                 <h1>O usuário logado é ${usuarioLogado}</h1>
 
             </div>
-        </c:if>
+        </c:if>-->
         <!-- Navigation -->
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">

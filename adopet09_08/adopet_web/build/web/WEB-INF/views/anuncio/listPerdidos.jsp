@@ -48,7 +48,7 @@
                         </h2>
                         <hr>
                     </div>
-                    <c:forEach items="${anuncioList}" var="anuncio">
+                    <c:forEach items="${anuncioList}" var="anuncio" varStatus="loop">
 
 
                         <div class="col-lg-12 text-center">
@@ -58,7 +58,9 @@
                                 <small>${anuncio.sexo}</small>
                             </h2>
                             <p>${anuncio.caracteristicas}</p>
-                            <a href="#" class="btn btn-default btn-lg">Read More</a>
+                             <img src="data:image/jpeg;base64,${anuncioImageList[loop.index]}" style="height:200px;width:300px"/>
+                             <br/> <br/>
+                             <a href="#" class="btn btn-default btn-lg">Read More</a>
                             <hr>
                         </div>
                     </c:forEach>

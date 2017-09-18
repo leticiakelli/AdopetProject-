@@ -49,6 +49,7 @@
                 <div class="jumbotron" left="30px" top="20px" rigth="30px">
 
                     <div class="row">
+                        <input type="hidden" value="${anuncio.id}" name="anuncioId"/>
 
                         <div class="col-xs-5">
                             <label for="tipo">Tipo Anuncio</label>
@@ -57,8 +58,8 @@
                                     name="tipo">
 
                                 <option value="">Selecione...</option>
-                                <option <c:if test="${anuncio.tipo eq 'Adoção'}">selected</c:if>value="Adoção">Adoção</option>
-                                <option <c:if test="${anuncio.tipo eq 'Perdido'}">selected</c:if>value="Perdido">Perdido</option>
+                                <option <c:if test="${anuncio.tipo eq 'Adoção'}"> selected="true" </c:if>value="Adoção">Adoção</option>
+                                <option <c:if test="${anuncio.tipo eq 'Perdido'}"> selected="true" </c:if>value="Perdido">Perdido</option>
                                 </select>
                             </div>
 
@@ -70,12 +71,12 @@
                         <div class="col-xs-5">
                             <label for="especie">Espécie</label>
 
-                            <select class="form-control" id="especie" 
-                                    name="especie">
+                            <select  class="form-control" id="especie" 
+                                     name="especie">
 
                                 <option value="">Selecione...</option>
-                                <option <c:if test="${anuncio.especie eq 'Cão'}">selected</c:if>value="Cão">Cão</option>
-                                <option <c:if test="${anuncio.especie eq 'Gato'}">selected</c:if>value="Gato">Gato</option>
+                                <option <c:if test="${especie.nome eq 'Cão'}"> selected="true" </c:if>value="Cão">Cão</option>
+                                <option <c:if test="${especie.nome eq 'Gato'}"> selected="true" </c:if>value="Gato">Gato</option>
 
                                 </select>
                             </div>
@@ -91,8 +92,8 @@
                                         name="sexo">
 
                                     <option value="">Selecione...</option>
-                                    <option <c:if test="${anuncio.sexo eq 'Macho'}">selected</c:if>value="Macho">Macho</option>
-                                <option <c:if test="${anuncio.sexo eq 'Fêmea'}">selected</c:if>value="Fêmea">Fêmea</option>
+                                    <option <c:if test="${anuncio.sexo eq 'Macho'}"> selected="true" </c:if>value="Macho">Macho</option>
+                                <option <c:if test="${anuncio.sexo eq 'Fêmea'}"> selected="true" </c:if>value="Fêmea">Fêmea</option>
                                 </select>
                             </div>  
 
@@ -105,9 +106,9 @@
                                         name="porte">
 
                                     <option value="">Selecione...</option>
-                                    <option <c:if test="${anuncio.porte eq 'Pequeno'}">selected</c:if>value="Pequeno">Pequeno</option>
-                                <option <c:if test="${anuncio.porte eq 'Medio'}">selected</c:if>value="Medio">Médio</option>
-                                <option <c:if test="${anuncio.porte eq 'Grande'}">selected</c:if>value="Grande">Grande</option>
+                                    <option <c:if test="${anuncio.porte eq 'Pequeno'}"> selected="true" </c:if>value="Pequeno">Pequeno</option>
+                                <option <c:if test="${anuncio.porte eq 'Medio'}"> selected="true" </c:if>value="Medio">Médio</option>
+                                <option <c:if test="${anuncio.porte eq 'Grande'}"> selected="true" </c:if>value="Grande">Grande</option>
                                 </select>
                             </div> 
 
@@ -125,12 +126,12 @@
                         <div class="col-xs-5">
                             <label for="caracteristica">Caracteristicas</label>
 
-                            <textarea class="form-control" rows="3" name="caracteristica" id="caracteristica" value = "${anuncio.caracteristica}"></textarea>
+                            <textarea class="form-control" rows="3" name="caracteristica" id="caracteristica" value = "${anuncio.caracteristicas}">${anuncio.caracteristicas}</textarea>
                         </div>
 
                         <div class="col-xs-5">
                             <label for="file">Foto</label>
-                            <input type="file"  class="form-control" name="foto" id="foto" value = "${anuncio.foto}"/>
+                            <input type="file"  class="form-control" name="foto" id="foto"/>
                             <p class="help-block">Realizar upload de um arquivo jpeg.</p>
                         </div>
 
@@ -150,7 +151,7 @@
                             <input type="text" class="form - control" name="local" id="local" value = "${anuncio.local}" />
                         </div>
                     </div>
-                        <button id="buttonConfirmaAnuncio" type="submit" class="btn btn-info">Confirmar</button>    
+                    <button id="buttonConfirmaAnuncio" type="submit" class="btn btn-info">Confirmar</button>    
                     <a class="btn btn-default" href="<c:url value="/anuncio"/>">Cancelar</a>
 
                 </div>
@@ -173,11 +174,22 @@
                     formDiv.style.display = 'none';
                 }
             });
-            
-            $("#buttonConfirmaAnuncio").click(function (){
-               var formDiv = document.getElementById("formPerdido");
-               formDiv.style.display = 'block';
+
+            $("#buttonConfirmaAnuncio").click(function () {
+                var formDiv = document.getElementById("formPerdido");
+                formDiv.style.display = 'block';
             });
+
+            //Exibe formulario com dados extras caso seja update
+            var selectBox = document.getElementById("tipo");
+            var tipo = selectBox.options[selectBox.selectedIndex].value;
+            console.log(tipo);
+            var formDiv = document.getElementById("formPerdido");
+            if (tipo === "Perdido") {
+                formDiv.style.display = 'block';
+            } else {
+                formDiv.style.display = 'none';
+            }
 
         </script>
 

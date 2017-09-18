@@ -13,16 +13,20 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class AnuncioController {
-    
+
     @RequestMapping(value = "/anuncio", method = RequestMethod.GET)
     public ModelAndView read() {
         ModelAndView mv = new ModelAndView("/anuncio/list");
@@ -35,12 +39,12 @@ public class AnuncioController {
         }
         return mv;
     }
-    
+
     @RequestMapping(value = "/adocao", method = RequestMethod.GET)
     public ModelAndView createAdocao() {
         ModelAndView mv = new ModelAndView("/anuncio/listAdocao");
         AnuncioService service = new AnuncioService();
-        
+
         try {
             //Recupera a foto da base de dados
             FotoService fotoService = new FotoService();
@@ -66,18 +70,18 @@ public class AnuncioController {
                 mv.addObject("anuncioList", listAdocao);
                 mv.addObject("anuncioImageList", listFotoAnuncios);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return mv;
     }
-    
+
     @RequestMapping(value = "/perdido", method = RequestMethod.GET)
     public ModelAndView createPerdidos() {
         ModelAndView mv = new ModelAndView("/anuncio/listPerdidos");
         AnuncioService service = new AnuncioService();
-        
+
         try {
             //Recupera a foto da base de dados
             FotoService fotoService = new FotoService();
@@ -103,19 +107,19 @@ public class AnuncioController {
                 mv.addObject("anuncioList", listAdocao);
                 mv.addObject("anuncioImageList", listFotoAnuncios);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return mv;
     }
-    
+
     @RequestMapping(value = "/anuncio/{id}/ver}", method = RequestMethod.GET)
     public ModelAndView showFormForVer() {
         ModelAndView mv = new ModelAndView("/anuncio/new");
         return mv;
     }
-    
+
     @RequestMapping(value = "/anuncio/{id}/ver", method = RequestMethod.GET) // /categorias = requisição do usuário na URL
     public ModelAndView Ver() {
         ModelAndView mv = new ModelAndView("/anuncio/new");
@@ -128,14 +132,14 @@ public class AnuncioController {
         }
         return mv;
     }
-    
+
     @RequestMapping(value = "/anuncio/novo", method = RequestMethod.GET)
     public ModelAndView showFormForCreate() {
         ModelAndView mv = new ModelAndView("/anuncio/form");
         return mv;
-        
+
     }
-    
+
     @RequestMapping(value = "/anuncio/novo", method = RequestMethod.POST)
     public ModelAndView create(String tipo, String especie, String sexo, String porte, String idade, String caracteristica, String raca, MultipartFile foto, String recompensa, String local) {
         ModelAndView mv = new ModelAndView("redirect:/anuncio");
@@ -162,11 +166,11 @@ public class AnuncioController {
                 e.printStackTrace();
                 fotoEntity = null;
             }
-            
+
         } else {
             System.err.println("Não salvou o arquivo");
         }
-        
+
         if (fotoEntity != null) {
             Anuncio anuncio = new Anuncio();
             anuncio.setTipo(tipo);
@@ -189,7 +193,7 @@ public class AnuncioController {
             //anuncio.setFoto_id(Long.parseLong("foto"));
             anuncio.setPessoaAnuncianteCpf(especie);
             anuncio.getPessoaAdotanteCpf();
-            
+
             EspecieService especieService = new EspecieService();
             try {
                 List<Especie> especieList = especieService.readByCriteria(null);
@@ -198,7 +202,7 @@ public class AnuncioController {
                         anuncio.setEspecie_id(entity.getId());
                     }
                 }
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -211,75 +215,103 @@ public class AnuncioController {
                 //TODO resolver isso aqui...
             }
         }
-        
+
         return mv;
-        
+
     }
-    
-    @RequestMapping(value = "/anuncio/{id}/alterar", method = RequestMethod.GET)
-    public ModelAndView showFormForUpdate(@PathVariable Long id) {
+
+    @RequestMapping(value = "/anuncio/{id}/update", method = RequestMethod.GET)
+    public ModelAndView update(@PathVariable Long id) {
         ModelAndView mv = new ModelAndView("/anuncio/form");
-        
+
         AnuncioService service = new AnuncioService();
         EspecieService especieService = new EspecieService();
-        
+
         try {
             Anuncio anuncio = service.readById(id);
-            Especie especie = especieService.readById(anuncio.getId());
-            
+            Especie especie = especieService.readById(anuncio.getEspecie_id());
+
             mv.addObject("anuncio", anuncio);
             if (especie != null) {
-                
+
                 mv.addObject("especie", especie);
             }
         } catch (Exception ex) {
             //TODO resolver isso aqui...
         }
-        
+
         return mv;
-        
+
     }
-    
-    @RequestMapping(value = "/anuncio/{id}/alterar", method = RequestMethod.POST)
-    public ModelAndView update(@PathVariable Long id, String tipo, String nome, String raca, String especie, String sexo, String porte, String idade, String caracteristica) {
-        ModelAndView mv = new ModelAndView("redirect:/anuncio");
-        
-        Anuncio anuncio = new Anuncio();
-        anuncio.setId(id);
-        anuncio.setTipo(tipo);
-        anuncio.setCaracteristicas(caracteristica);
-        anuncio.setIdade(Integer.parseInt(idade));
-        anuncio.setPorte(porte);
-        anuncio.setRaca(raca);
-        anuncio.setSexo(sexo);
-        anuncio.setFoto_id(id);
-        
-        EspecieService especieService = new EspecieService();
-        try {
-            List<Especie> especieList = especieService.readByCriteria(null);
-            for (Especie entity : especieList) {
-                if (entity.getNome().equals(especie)) {
-                    anuncio.setEspecie_id(entity.getId());
+
+    @RequestMapping(value = "/anuncio/{anuncioId}/update", method = RequestMethod.POST)
+    public ModelAndView update(@PathVariable String anuncioId, String tipo, String nome, String raca, String especie, String sexo, String porte, String idade, String caracteristica, MultipartFile foto, String recompensa, String local) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        ModelAndView mv = new ModelAndView("redirect:/anuncio/");
+        AnuncioService service = new AnuncioService();
+        Foto fotoEntity = null;
+        if (foto != null || !foto.isEmpty()) {
+            String nomeArquivo = nome + System.currentTimeMillis() + ConfiguracaoSistema.extensaoImagem;
+            //Entidade foto
+
+            //Criar arquivo no caminho
+            //Criar arquivo no caminho
+            if (foto != null && nomeArquivo != null) {
+                //Cria arquivo
+                IOUtils.createFile(ConfiguracaoSistema.caminhoImagem, nomeArquivo, foto);
+                //Seta nome do arquivo
+                fotoEntity = new Foto();
+                fotoEntity.setNome(nomeArquivo);
+                //Salva no banco
+                FotoService fotoService = new FotoService();
+                try {
+                    //cria no sgbd
+                    fotoService.create(fotoEntity);
+                    //recuperar para pegar o id
+                    List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>());
+                    fotoEntity = fotoList.get(fotoList.size() - 1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    fotoEntity = null;
                 }
+
+            } else {
+                System.err.println("Não salvou o arquivo");
             }
-            
+        }
+        AnuncioService anuncioService = new AnuncioService();
+
+        Anuncio anuncio = new Anuncio();
+        try {
+            anuncio = anuncioService.readById(Long.parseLong(anuncioId));
+            anuncio.setTipo(tipo);
+            anuncio.setCaracteristicas(caracteristica);
+            anuncio.setIdade(Integer.parseInt(idade));
+            anuncio.setPorte(porte);
+            anuncio.setRaca(raca);
+            anuncio.setSexo(sexo);
+            if (tipo != null && tipo.equals(TipoAnuncioEnum.Perdido.name())) {
+                anuncio.setRecompensa(recompensa);
+                anuncio.setLocal(local);
+            }
+            if (fotoEntity != null) {
+                anuncio.setFoto_id(fotoEntity.getId());
+            }
+
+            anuncioService.update(anuncio);
+
         } catch (Exception e) {
             e.printStackTrace();
+            mv = new ModelAndView("redirect:/anuncio/");
         }
-        AnuncioService service = new AnuncioService();
-        try {
-            service.update(anuncio);
-        } catch (Exception ex) {
-            //TODO resolver isso aqui...
-        }
+
         return mv;
-        
     }
-    
-    @RequestMapping(value = "/anuncio/{id}/excluir", method = RequestMethod.GET)
+
+    @RequestMapping(value = "/anuncio/{id}/delete", method = RequestMethod.GET)
     public ModelAndView delete(@PathVariable Long id) {     //@PathVariable injeta o valor da url e converte o valor. OBS: o nome na url tem de ser igual ao do parametro
         ModelAndView mv = new ModelAndView("redirect:/anuncio");
-        
+
         AnuncioService service = new AnuncioService();
         try {
             service.delete(id);
@@ -288,5 +320,5 @@ public class AnuncioController {
         }
         return mv;
     }
-    
+
 }

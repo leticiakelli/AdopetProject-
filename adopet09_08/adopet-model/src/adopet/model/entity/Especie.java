@@ -1,3 +1,4 @@
+
 package adopet.model.entity;
 
 import adopet.model.base.BaseEntity;

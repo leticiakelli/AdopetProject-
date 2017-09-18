@@ -20,6 +20,18 @@ public class EspecieService implements BaseEspecieService {
 
     @Override
     public Especie readById(Long id) throws Exception {
+        if (entityList.isEmpty()) {
+            entityList.clear();
+            Especie especie = new Especie();
+            especie.setId(1L);
+            especie.setNome("Cão");
+            entityList.add(especie);
+            
+            especie = new Especie();
+            especie.setId(2L);
+            especie.setNome("Gato");
+            entityList.add(especie);
+        }
         Especie entity = null;
         for (Especie aux : entityList) {
             if (aux.getId().equals(id)) {
@@ -32,6 +44,17 @@ public class EspecieService implements BaseEspecieService {
 
     @Override
     public List<Especie> readByCriteria(Map<Long, Object> criteria) throws Exception {
+        if (entityList.isEmpty()) {
+            entityList.clear();
+            Especie especie = new Especie();
+            especie.setId(1L);
+            especie.setNome("Cão");
+            entityList.add(especie);
+            especie = new Especie();
+            especie.setId(2L);
+            especie.setNome("Gato");
+            entityList.add(especie);
+        }
         return entityList;
     }
 

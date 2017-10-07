@@ -6,12 +6,13 @@
 
 body {
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    background: url('../img/wallpaper.jpg') no-repeat center center fixed;
+    background:#FFF no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
 }
+
 
 h1,
 h2,

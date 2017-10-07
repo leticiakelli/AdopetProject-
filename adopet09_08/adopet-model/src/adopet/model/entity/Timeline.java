@@ -6,9 +6,11 @@ import java.sql.Timestamp;
 
 public class Timeline extends BaseEntity{
     private Timestamp data_hora;
+    private String texto;
     private Long anuncio_id;
     private String pessoa_cpf;
     private Long foto_id;
+    
 
     public Timestamp getData_hora() {
         return data_hora;
@@ -18,6 +20,15 @@ public class Timeline extends BaseEntity{
         this.data_hora = data_hora;
     }
 
+    public String getTexto() {
+        return texto;
+    }
+
+    public void setTexto(String texto) {
+        this.texto = texto;
+    }
+
+    
     public String getPessoa_cpf() {
         return pessoa_cpf;
     }

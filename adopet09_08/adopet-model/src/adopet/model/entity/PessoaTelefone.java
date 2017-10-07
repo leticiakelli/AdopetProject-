@@ -5,6 +5,7 @@ import adopet.model.base.BaseEntity;
 
 
 public class PessoaTelefone extends BaseEntity{
+   
     private String telefone;
     private String celular; 
 

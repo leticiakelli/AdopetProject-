@@ -14,6 +14,7 @@ private String cidade;
 private String estado;
 private Long foto_id;
 private Long usuario_id;
+private Long pessoaTelefone_id;
 
     public Long getUsuario_id() {
         return usuario_id;
@@ -22,7 +23,6 @@ private Long usuario_id;
     public void setUsuario_id(Long usuario_id) {
         this.usuario_id = usuario_id;
     }
-private Long pessoaTelefone_id;
 
     public String getCpf() {
         return cpf;

@@ -5,7 +5,7 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
-  font-family: sans-serif;
+ font-family: "Josefin Slab","Helvetica Neue",Helvetica,Arial,sans-serif;
   -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
 }
@@ -1214,7 +1214,7 @@ h6 .small,
 .h6 .small {
   font-weight: normal;
   line-height: 1;
-  color: #777;
+  color: #FFF;
 }
 h1,
 .h1,
@@ -4538,7 +4538,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   background-color: #888;
 }
 .navbar-default .navbar-collapse,
-.navbar-default .navbar-form {
+.navbar-default .navbar-    form {
   border-color: #e7e7e7;
 }
 .navbar-default .navbar-nav > .open > a,

@@ -1,12 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<%-- 
-    Document   : index
-    Created on : 30/05/2017, 22:07:55
-    Author     : Alunos
---%>
-
 
 
 <!DOCTYPE html>
@@ -56,6 +50,8 @@
                         <th>Raca</th>
                         <th>Sexo</th>
                         <th>Tipo</th>
+                        <th>Menu</th>
+                        <th>Status</th>
 
                     </tr>
                     <c:forEach items="${anuncioList}" var="anuncio">
@@ -64,9 +60,22 @@
                             <td>${anuncio.raca}</td> 
                             <td>${anuncio.sexo}</td> 
                             <td>${anuncio.tipo}</td>
-                            <td><a class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/ver"/>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                            <td><a class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/update"/>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></td>
-                            <td><a  class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/delete"/>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                            <td><a class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/read"/>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                            <a class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/update"/>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                            <a  class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/delete"/>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                            
+                            <c:if test="${anuncio.status == 'encontrado'}"> 
+                                
+                                <td><a  class="btn btn-warning"  href="<c:url value="/anuncio/${anuncio.id}/status"/>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Encontrado</a></td>
+                            </c:if>
+                            <c:if test="${anuncio.status == 'adotado'}"> 
+                                    
+                                <td><a  class="btn btn-warning"  href="<c:url value="/anuncio/${anuncio.id}/status"/>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Adotado</a></td>
+                            </c:if>
+                            <c:if test="${anuncio.status == 'pendente'}"> 
+                             
+                                 <td><a  class="btn btn-success"  href="<c:url value="/anuncio/${anuncio.id}/status"/>"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Pendente</a></td>
+                            </c:if>
 
                         </tr>
                     </c:forEach>
@@ -77,6 +86,8 @@
         <script src="<c:url value="/resources/js/jquery.js"/>"</script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
+
+
     </body>
 
 </html>

@@ -1,5 +1,7 @@
 package adopet.controller;
 
+import adopet.model.criteria.PessoaCriteria;
+import adopet.model.criteria.UsuarioCriteria;
 import adopet.utils.ConfiguracaoSistema;
 import adopet.model.entity.Foto;
 import adopet.model.entity.Pessoa;
@@ -14,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +38,7 @@ public class PessoaController {
 
         PessoaService service = new PessoaService();
         try {
-            List<Pessoa> pessoaList = service.readByCriteria(null);
+            List<Pessoa> pessoaList = service.readByCriteria(new HashMap<Long, Object>(), null, null);
             mv.addObject("pessoaList", pessoaList);
         } catch (Exception ex) {
             //TODO resolver depois...
@@ -50,6 +53,8 @@ public class PessoaController {
             String bairro, String uf, String telefone, String celular, MultipartFile foto) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         ModelAndView mv = new ModelAndView("redirect:/adocao");
+        List<String> errors = new ArrayList<>();
+
         //Criar novo usuario
         //Nome do arquivo
         String nomeArquivo = nome + System.currentTimeMillis() + ConfiguracaoSistema.extensaoImagem;
@@ -68,7 +73,7 @@ public class PessoaController {
                 //cria no sgbd
                 fotoService.create(fotoEntity);
                 //recuperar para pegar o id
-                List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>());
+                List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>(), null, null);
                 fotoEntity = fotoList.get(fotoList.size() - 1);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -83,21 +88,23 @@ public class PessoaController {
         usuario.setEmail(email);
         usuario.setSenha(senha);
 
+        Pessoa pessoa = null;
         if (usuario.getEmail() != null
                 && !usuario.getEmail().isEmpty() && usuario.getSenha() != null
-                && !usuario.getSenha().isEmpty() && usuarioService.validateForCreate(usuario)) {
+                && !usuario.getSenha().isEmpty()) {
             List<Usuario> listUsuario = new ArrayList<Usuario>();
             try {
                 usuarioService.create(usuario);
-                listUsuario = usuarioService.readByCriteria(new HashMap<Long, Object>());
+                listUsuario = usuarioService.readByCriteria(new HashMap<Long, Object>(), null, null);
+                usuario = listUsuario.get(listUsuario.size() - 1);
             } catch (Exception e) {
                 e.printStackTrace();
                 usuario = null;
             }
 
             if (usuario != null) {
-                usuario.setId(listUsuario.get(listUsuario.size() - 1).getId());
-                Pessoa pessoa = new Pessoa();
+
+                pessoa = new Pessoa();
                 pessoa.setUsuario_id(usuario.getId());
                 pessoa.setNome(nome);
                 pessoa.setCpf(cpf);
@@ -117,7 +124,7 @@ public class PessoaController {
                 try {
                     pessoaTelefoneService.create(pessoaTelefone);
                     //recuperar para pegar o id
-                    List<PessoaTelefone> list = pessoaTelefoneService.readByCriteria(new HashMap<Long, Object>());
+                    List<PessoaTelefone> list = pessoaTelefoneService.readByCriteria(new HashMap<Long, Object>(), null, null);
 
                     pessoa.setPessoaTelefone_id(list.get(list.size() - 1).getId());
                     //Se foto estiver vazio nao cadastra
@@ -145,27 +152,50 @@ public class PessoaController {
                 && !usuario.getSenha().isEmpty()) {
             List<Usuario> listUsuario = null;
             //verifica se usuarios existentes
+            //Mapa de criterios de busca
+            Map<Long, Object> criteria = new HashMap<Long, Object>();
+            criteria.put(UsuarioCriteria.EMAIL_EQ, usuario.getEmail());
+            criteria.put(UsuarioCriteria.SENHA_EQ, usuario.getSenha());
+            //Busca usuario com email e senha iguaios no banco
             try {
-                listUsuario = usuarioService.readByCriteria(new HashMap<>());
+                listUsuario = usuarioService.readByCriteria(criteria, null, null);
             } catch (Exception e) {
                 e.printStackTrace();
 
             }
-            //seta usuario na sessao
+            //se encontrou procuta qual  pessoa com o mesmo id
             if (listUsuario != null && !listUsuario.isEmpty()) {
-                for (Usuario usuarioSalvo : listUsuario) {
-                    if (usuarioSalvo.getEmail().equals(usuario.getEmail())
-                            && usuarioSalvo.getSenha().equals(usuario.getSenha())) {
-                        //seta ususario na sessao
-                        HttpSession session = request.getSession();
-                        session.setAttribute("usuarioLogado", email);
-                        break;
-                    }
+                Usuario usuarioDb = listUsuario.get(0);
+
+                PessoaService pessoaService = new PessoaService();
+                //Criterio de busca
+                Map<Long, Object> criteriaPessoa = new HashMap<Long, Object>();
+                criteriaPessoa.put(PessoaCriteria.USUARIO_ID_EQ, usuarioDb.getId());
+                List<Pessoa> pessoaListDb = new ArrayList<>();
+                try {
+                    pessoaListDb = pessoaService.readByCriteria(criteriaPessoa, null, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
+                //se encontrou adiciona atributo
+                if (pessoaListDb != null && !pessoaListDb.isEmpty()) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("usuarioLogado", email);
+                    session.setAttribute("pessoaCpfLogado", pessoaListDb.get(0).getCpf());
+                    mv = new ModelAndView("redirect:/adocao");
+                } else {
+                    errors.add("Pessoa não cadastrada");
+                }
+
+            } else {
+                errors.add("Usuário Incorreto");
             }
 
+        } else {
+            errors.add("Verifique os campos");
         }
+        mv.addObject("errors", errors);
 
         return mv;
 
@@ -183,7 +213,7 @@ public class PessoaController {
             UsuarioService serviceUsuario = new UsuarioService();
             try {
                 //TODO: inserir criteria
-                List<Usuario> usuarioList = serviceUsuario.readByCriteria(new HashMap<Long, Object>());
+                List<Usuario> usuarioList = serviceUsuario.readByCriteria(new HashMap<Long, Object>(), null, null);
                 if (usuarioList != null && !usuarioList.isEmpty()) {
                     for (Usuario usuario : usuarioList) {
                         if (usuario.getEmail().equals(email)) {
@@ -191,14 +221,14 @@ public class PessoaController {
                             //pessoa
                             PessoaService service = new PessoaService();
                             try {
-                                List<Pessoa> pessoaList = service.readByCriteria(null);
+                                List<Pessoa> pessoaList = service.readByCriteria(new HashMap<Long, Object>(), null, null);
                                 for (Pessoa pessoa : pessoaList) {
                                     if (usuario.getId() == pessoa.getUsuario_id()) {
 
                                         //Pessoa telefone
                                         PessoaTelefoneService pessoaTelefoneService = new PessoaTelefoneService();
                                         try {
-                                            List<PessoaTelefone> pessoaTelefoneList = pessoaTelefoneService.readByCriteria(null);
+                                            List<PessoaTelefone> pessoaTelefoneList = pessoaTelefoneService.readByCriteria(new HashMap<Long, Object>(), null, null);
                                             for (PessoaTelefone pessoaTelefoneEntity : pessoaTelefoneList) {
                                                 if (pessoa.getPessoaTelefone_id() == pessoaTelefoneEntity.getId()) {
                                                     mv.addObject("usuario", usuario);
@@ -242,7 +272,7 @@ public class PessoaController {
         //Atualiza usuario
         //Nome do arquivo
         Foto fotoEntity = null;
-        if (foto != null || !foto.isEmpty()) {
+        if (foto != null && !foto.isEmpty() && foto.getSize() > 0) {
             String nomeArquivo = nome + System.currentTimeMillis() + ConfiguracaoSistema.extensaoImagem;
             //Entidade foto
 
@@ -259,7 +289,7 @@ public class PessoaController {
                     //cria no sgbd
                     fotoService.create(fotoEntity);
                     //recuperar para pegar o id
-                    List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>());
+                    List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>(), null, null);
                     fotoEntity = fotoList.get(fotoList.size() - 1);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -294,40 +324,45 @@ public class PessoaController {
                 Pessoa pessoa = null;
                 try {
                     PessoaService pessoaService = new PessoaService();
-                    pessoa = pessoaService.readById(Long.parseLong(pessoaId));
-                    pessoa.setNome(nome);
-                    pessoa.setCpf(cpf);
-                    pessoa.setLogradouro(logradouro);
-                    pessoa.setNumero(Integer.parseInt(numero));
-                    pessoa.setComplemento(complemento);
-                    pessoa.setCidade(cidade);
-                    pessoa.setBairro(bairro);
-                    pessoa.setEstado(uf);
+                    Map<Long, Object> criteria = new HashMap<>();
+                    criteria.put(PessoaCriteria.USUARIO_ID_EQ, Long.parseLong(usuarioId));
+                    List<Pessoa> pessoaDbList = pessoaService.readByCriteria(criteria, null, null);
+                    if (pessoaDbList != null && !pessoaDbList.isEmpty()) {
+                        pessoa = pessoaDbList.get(0);
+                        pessoa.setNome(nome);
+                        pessoa.setCpf(cpf);
+                        pessoa.setLogradouro(logradouro);
+                        pessoa.setNumero(Integer.parseInt(numero));
+                        pessoa.setComplemento(complemento);
+                        pessoa.setCidade(cidade);
+                        pessoa.setBairro(bairro);
+                        pessoa.setEstado(uf);
 
-                    //telefone service
-                    PessoaTelefoneService pessoaTelefoneService = new PessoaTelefoneService();
-                    //TODO: limpar todos os telefones desta pessoa no sgbd
+                        //telefone service
+                        PessoaTelefoneService pessoaTelefoneService = new PessoaTelefoneService();
+                        //TODO: limpar todos os telefones desta pessoa no sgbd
 
-                    //cria no sgbd
-                    PessoaTelefone pessoaTelefone = new PessoaTelefone();
-                    pessoaTelefone.setTelefone(telefone);
-                    pessoaTelefone.setCelular(celular);
-                    try {
-                        pessoaTelefoneService.create(pessoaTelefone);
-                        //recuperar para pegar o id
-                        List<PessoaTelefone> list = pessoaTelefoneService.readByCriteria(new HashMap<Long, Object>());
+                        //cria no sgbd
+                        PessoaTelefone pessoaTelefone = new PessoaTelefone();
+                        pessoaTelefone.setTelefone(telefone);
+                        pessoaTelefone.setCelular(celular);
+                        try {
+                            pessoaTelefoneService.create(pessoaTelefone);
+                            //recuperar para pegar o id
+                            List<PessoaTelefone> list = pessoaTelefoneService.readByCriteria(new HashMap<Long, Object>(), null, null);
 
-                        pessoa.setPessoaTelefone_id(list.get(list.size() - 1).getId());
-                        //Se foto estiver vazio nao cadastra
-                        if (fotoEntity != null) {
-                            pessoa.setFoto_id(fotoEntity.getId());
+                            pessoa.setPessoaTelefone_id(list.get(list.size() - 1).getId());
+                            //Se foto estiver vazio nao cadastra
+                            if (fotoEntity != null) {
+                                pessoa.setFoto_id(fotoEntity.getId());
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
+                        pessoaService.update(pessoa);
                     }
-                    pessoaService.update(pessoa);
 
                 } catch (Exception e) {
                     e.printStackTrace();

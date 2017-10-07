@@ -36,39 +36,46 @@
 
     </head>
     <body>
+        <jsp:include page = "/WEB-INF/views/componentes/menu.jsp" />
+<div class="container-fluid">
 
-        <div class="container">
+            <div class="col-lg-1"></div>
+            <div class="panel panel-default col-lg-10 col-md-10 full-height js-full-height">
+                <div class="panel-heading full-height">
+        
             <c:if test="${empty anuncio}">
-                <h1>Novo Anuncio</h1>
+                <h1 style="color:#122b40">Novo Anúncio</h1>
             </c:if>
 
             <c:if test="${not empty anuncio}">
-                <h1>Editar anuncio</h1>
+                <h1 style="color:#122b40">Editar anuncio</h1>
             </c:if>
-            <form method="post"enctype="multipart/form-data">
-                <div class="jumbotron" left="30px" top="20px" rigth="30px">
+                </div>
+            <form method="post" enctype="multipart/form-data">
 
-                    <div class="row">
+                    <div class="panel-body">
+
+                        <div class="row">
                         <input type="hidden" value="${anuncio.id}" name="anuncioId"/>
 
-                        <div class="col-xs-5">
+                        <div class="form-group col-lg-6">
                             <label for="tipo">Tipo Anuncio</label>
 
                             <select class="form-control" id="tipo" 
                                     name="tipo">
 
                                 <option value="">Selecione...</option>
-                                <option <c:if test="${anuncio.tipo eq 'Adoção'}"> selected="true" </c:if>value="Adoção">Adoção</option>
-                                <option <c:if test="${anuncio.tipo eq 'Perdido'}"> selected="true" </c:if>value="Perdido">Perdido</option>
+                                <option <c:if test="${anuncio.tipo eq 'adocao'}"> selected="true" </c:if>value="adocao">Adoção</option>
+                                <option <c:if test="${anuncio.tipo eq 'perdido'}"> selected="true" </c:if>value="perdido">Perdido</option>
                                 </select>
                             </div>
 
-                            <div class="col-xs-5">
+                            <div class="form-group col-lg-6">
                                 <label for="nome">Raça</label>
                                 <input type="text" class="form-control" name="raca" id="nome" value = "${anuncio.raca}"/>
                         </div>
 
-                        <div class="col-xs-5">
+                        <div class="form-group col-lg-6">
                             <label for="especie">Espécie</label>
 
                             <select  class="form-control" id="especie" 
@@ -85,21 +92,21 @@
                             </br>
 
 
-                            <div class="col-xs-5">
+                            <div class="form-group col-lg-6">
                                 <label for="sexo">Sexo</label>
 
                                 <select class="form-control" id="sexo" 
                                         name="sexo">
 
                                     <option value="">Selecione...</option>
-                                    <option <c:if test="${anuncio.sexo eq 'Macho'}"> selected="true" </c:if>value="Macho">Macho</option>
-                                <option <c:if test="${anuncio.sexo eq 'Fêmea'}"> selected="true" </c:if>value="Fêmea">Fêmea</option>
+                                    <option <c:if test="${anuncio.sexo eq 'm'}"> selected="true" </c:if>value="Macho">Macho</option>
+                                <option <c:if test="${anuncio.sexo eq 'f'}"> selected="true" </c:if>value="Fêmea">Fêmea</option>
                                 </select>
                             </div>  
 
 
 
-                            <div class="col-xs-5">
+                            <div class="form-group col-lg-6">
                                 <label for="porte">Porte</label>
 
                                 <select class="form-control" id="porte" 
@@ -114,7 +121,7 @@
 
 
 
-                            <div class="col-xs-5">
+                            <div class="form-group col-lg-6">
                                 <label for="idade">idade</label>
                                 <input type="text" class="form-control" name="idade" id="idade" value = "${anuncio.idade}"/>
                         </div>
@@ -123,13 +130,13 @@
                         </br>
 
 
-                        <div class="col-xs-5">
+                        <div class="form-group col-lg-6">
                             <label for="caracteristica">Caracteristicas</label>
 
                             <textarea class="form-control" rows="3" name="caracteristica" id="caracteristica" value = "${anuncio.caracteristicas}">${anuncio.caracteristicas}</textarea>
                         </div>
 
-                        <div class="col-xs-5">
+                        <div class="form-group col-lg-6">
                             <label for="file">Foto</label>
                             <input type="file"  class="form-control" name="foto" id="foto"/>
                             <p class="help-block">Realizar upload de um arquivo jpeg.</p>
@@ -156,6 +163,7 @@
 
                 </div>
         </div>
+        </div>
 
 
 
@@ -168,7 +176,7 @@
                 var tipo = selectBox.options[selectBox.selectedIndex].value;
                 console.log(tipo);
                 var formDiv = document.getElementById("formPerdido");
-                if (tipo === "Perdido") {
+                if (tipo === "perdido") {
                     formDiv.style.display = 'block';
                 } else {
                     formDiv.style.display = 'none';
@@ -185,7 +193,7 @@
             var tipo = selectBox.options[selectBox.selectedIndex].value;
             console.log(tipo);
             var formDiv = document.getElementById("formPerdido");
-            if (tipo === "Perdido") {
+            if (tipo === "perdido") {
                 formDiv.style.display = 'block';
             } else {
                 formDiv.style.display = 'none';
@@ -193,6 +201,7 @@
 
         </script>
 
+        <jsp:include page = "/WEB-INF/views/componentes/footer.jsp" />
 
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>

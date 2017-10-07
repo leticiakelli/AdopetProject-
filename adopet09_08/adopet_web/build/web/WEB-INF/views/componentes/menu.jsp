@@ -13,6 +13,8 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- Bootstrap -->
+        <script src="<c:url value="/resources/js/jquery.js"/>"></script>
+        <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
         <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet">
 
         <!-- Business Casual -->
@@ -32,34 +34,29 @@ and open the template in the editor.
     </head>
     <body>
 
-        <div class="brand">AdoPet</div>
+
         <!--<div class="address-bar">Adote essa idéia</div>-->
         <!--informações do usuario logado-->
-       <!-- <c:if test="${not empty usuarioLogado}">
-            <div id="logado">
-                <h1>O usuário logado é ${usuarioLogado}</h1>
-
-            </div>
+        <!-- <c:if test="${not empty usuarioLogado}">
+             <div id="logado">
+                 <h1>O usuário logado é ${usuarioLogado}</h1>
+ 
+             </div>
         </c:if>-->
         <!-- Navigation -->
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-                    <a class="navbar-brand" href="index.jsp">AdoPet</a>
-                </div>
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
+
+
+        <nav class="fh5co-nav-style-1 " role="navigation" data-offcanvass-position="fh5co-offcanvass-left">
+            <div class="container-fluid"><br><br>
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12 fh5co-logo">
+                    <a href="#" class="js-fh5co-mobile-toggle fh5co-nav-toggle"><i></i></a>
+                    <a href="/adopet-web/index.jsp"><h1 class="cover-text-lead wow fadeInUp" data-wow-duration="1s" data-wow-delay=".5s" style="visibility: visible; animation-duration: 1s; animation-delay: 0.5s; animation-name: fadeInUp;">AdoPet</h1></a>
+                </div><br>
+                <div class="col-lg-6 col-md-4 col-sm-3 text-center fh5co-link-wrap">
+                    <ul data-offcanvass="yes">
+
                         <li>
-                            <a href="index.jsp">Home</a>
+                            <a href="/adopet-web/index.jsp">Home</a>
                         </li>
                         <li>
                             <a href="<c:url value="/adocao/"/>">Adoção</a>
@@ -67,10 +64,13 @@ and open the template in the editor.
                         <li>
                             <a href="<c:url value="/perdido/"/>">Perdidos</a>
                         </li>
-
-
-
-
+                        <li>
+                            <a href="<c:url value="/posAdocao/"/>">Pós Adoção</a>
+                        </li>
+                    </ul>
+                </div> 
+                <div class="col-lg-4 col-md-5 col-sm-3 text-right fh5co-link-wrap">
+                    <ul class="fh5co-special" data-offcanvass="yes">
                         <c:if test="${not empty usuarioLogado}">
                             <li>
                                 <a href="<c:url value="/anuncio/"/>">Gerenciar</a>
@@ -79,7 +79,7 @@ and open the template in the editor.
                                 <a href="<c:url value="/logout/"/>">Logout</a>
                             </li>
                             <li>
-                                <a href="<c:url value="/pessoa/cadastro/update/"/>">Meus dados</a>
+                                <a href="<c:url value="/pessoa/cadastro/update"/>">Meus dados</a>
                             </li>  
                         </c:if>
                         <c:if test="${ empty usuarioLogado}">
@@ -87,18 +87,58 @@ and open the template in the editor.
                                 <a href="<c:url value="/login/"/>">Login</a>       
                             </li>
                             <li>
-                                <a href="<c:url value="/pessoa/cadastro/"/>">Cadastrar-se</a>
+                                <a href="<c:url value="/pessoa/cadastro/"/>" class="call-to-action">Cadastre-se</a>
                             </li> 
                         </c:if>
 
                     </ul>
                 </div>
-                <!-- /.navbar-collapse -->
             </div>
-            <!-- /.container -->
         </nav>
 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <!-- Indicators -->
+        <div class="container"><div id="myCarousel" class="carousel slide" data-ride="carousel">                                            <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="col-md-6"><h3 style="color:#000">Por que adotar um animal?</h3></div>
+                                <div class="col-md-6"><p style="color:#000">Quando a criança tem menos de um aninho, ter um cão ou um gato em casa reduz em até 50% as chances do bebê desenvolver algum tipo e alergia.<font style="color:#ffff">e deixa o ambiente mais positivo para toda a família</font></p></div>
 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="col-md-6"><h3 style="color:#000">Por que adotar um animal?</h3></div>
+                                <div class="col-md-6"><p style="color:#000"> Ao adotar um animal de estimação você poderá dar e receber carinho. Pesquisas relevam que ter um animalzinho em casa afasta a depressão e deixa o ambiente mais positivo para toda a família</p></div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="item"><div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="col-md-6"><h3 style="color:#000">Por que adotar um animal?</h3></div>
+                                <div class="col-md-6"><p style="color:#000"> Ao adotar, você ajuda a reduzir o número de cães e gatos abandonados. Geralmente os animais de rua ou de abrigos já passaram por muito sofrimento e tudo o que eles precisam é de um bom lar para serem felizes de verdade.</p></div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </div>
     </body>
 </html>
 

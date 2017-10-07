@@ -36,48 +36,119 @@
 
     </head>
     <body>
+        <div class="container_erros">
+            <c:forEach items="${errors}" var="erro" varStatus="loop">
+                Testeste
+                <div class="alert alert-warning" role="alert">
+                    ${erro} 
+                </div>
+            </c:forEach>
+        </div>
+        <jsp:include page = "/WEB-INF/views/componentes/menu.jsp" />
+
         <div class="container">
             <form method="post">
-                <div class="jumbotron" left="30px" top="20px" rigth="30px">
-                    <h1>Login</h1>
-                    <div class="col-xs-6">
-                        <label for="nome">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Digite seu email"/>
-                        <br>
-                    </div>
 
-                    <div class="col-xs-4">
-                        <label for="nome">Senha</label>
-                        <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite sua senha"/>
-                        <br>
-                        <br>
+                <div class="panel panel-default col-md-5 ">
+                    <div class="panel-heading">
+                        <h3 style="color:#000">Login</h3>
                     </div>
-                    <br>
-                     
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="nome">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Digite seu email"/>
+                            <br>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nome">Senha</label>
+                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite sua senha"/>
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+
                         <button type="submit" class="btn btn-danger ">Login</button>
-  
-                    <br>
-                   
-<!--                    <button type="submit" class="btn btn-info">Confirmar</button>  -->
+
+                        <br>
+
+                        <!--                    <button type="submit" class="btn btn-info">Confirmar</button>  -->
+                        <br>
+                        <button type="button" class="btn btn-link">Esqueceu a senha?</button>
+                        <br>
+                        <p class="text-center">ou</p>
+
+                        <button type="submit" class="btn btn-primary center-block "><span class="social social-facebook"></span>Conectar com facebook</button>
+
+
+
+
+
+                    </div><br>
                 </div>
 
-            </form>
+                <div class="col-md-1"></div>           
+                <div class="panel panel-default col-md-6">
+                    <div class="panel-heading">
+                        <h3 style="color:#000">Cadastre-se</h3>
+                    </div>
+                    <div class="panel-body">
+
+
+
+                        <ul class="list-unstyled">
+                            <li>
+                                Criar uma conta é simples
+
+                                <br>
+                                <br>
+                            <n>Insira seu endereço de email, preencha o formulário a seguir<br>e aproveite os beneficios</n>
+
+                            <br>
+                            <br>
+                            <span class="glyphicon glyphicon-ok"> Ter acesso a função adotar e anunciar</span>  
+                            <br>
+                            <br>
+                            <span class="glyphicon glyphicon-ok"> Visualizar seus favoritos</span>  
+                            <br>
+                            <br>
+                            <span class="glyphicon glyphicon-ok"> Postar fotos do animal adotado pelo nosso site</span>  
+                            <br>
+                            <br>
+                            <span class="glyphicon glyphicon-ok"> Adicionar ou alterar as preferências de email</span>  
+                            <br>
+                            <br>
+
+
+                            </li>
+
+
+                            <a href="<c:url value="/pessoa/cadastro/"/>"<button type="submit" class="btn btn-primary">Criar conta</button></a>
+                        </ul>
+                    </div>
+                </div>
         </div>
 
 
+        <jsp:include page = "/WEB-INF/views/componentes/footer.jsp" />
+
+    </form>
+</div>
 
 
 
 
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="<c:url value="/resources/js/jquery.js"/>"</script>
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
-        <script>
-            $("#myDialog").modal();
 
-        </script>
-    </body>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="<c:url value="/resources/js/jquery.js"/>"</script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
+<script>
+    $("#myDialog").modal();
+
+</script>
+</body>
 
 </html>
 

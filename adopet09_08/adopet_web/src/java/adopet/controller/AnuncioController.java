@@ -1,18 +1,34 @@
 package adopet.controller;
 
+import adopet.model.criteria.TimelineCriteria;
 import adopet.utils.ConfiguracaoSistema;
 import adopet.model.entity.Anuncio;
 import adopet.model.entity.Especie;
 import adopet.model.entity.Foto;
+import adopet.model.entity.Pessoa;
+import adopet.model.entity.PessoaTelefone;
+import adopet.model.entity.Post;
+import adopet.model.entity.Timeline;
+import adopet.model.entity.Usuario;
 import adopet.model.service.AnuncioService;
 import adopet.model.service.EspecieService;
 import adopet.model.service.FotoService;
+import adopet.model.service.PessoaService;
+import adopet.model.service.PessoaTelefoneService;
+import adopet.model.service.TimelineService;
+import adopet.model.service.UsuarioService;
 import adopet.utils.IOUtils;
 import adopet.utils.TipoAnuncioEnum;
+import adopet.utils.TipoSexoEnum;
+import adopet.utils.TipoStatusAnuncioEnum;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -28,13 +44,23 @@ import org.springframework.web.servlet.ModelAndView;
 public class AnuncioController {
 
     @RequestMapping(value = "/anuncio", method = RequestMethod.GET)
-    public ModelAndView read() {
+    public ModelAndView readByGerenciador() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         ModelAndView mv = new ModelAndView("/anuncio/list");
         AnuncioService service = new AnuncioService();
         try {
-            List<Anuncio> anuncioList = service.readByCriteria(null);
-            mv.addObject("anuncioList", anuncioList);
+            List<Anuncio> anuncioList = service.readByCriteria(new HashMap<Long, Object>(), null, null);
+            List<Anuncio> anuncioUsuarioList = new ArrayList<Anuncio>();
+            HttpSession session = request.getSession();
+            String cpf = (String) session.getAttribute("pessoaCpfLogado");
+            for (Anuncio anuncio : anuncioList) {
+                if (anuncio.getPessoaAnuncianteCpf().equals(cpf)) {
+                    anuncioUsuarioList.add(anuncio);
+                }
+            }
+            mv.addObject("anuncioList", anuncioUsuarioList);
         } catch (Exception ex) {
+            ex.printStackTrace();
             //TODO resolver depois...
         }
         return mv;
@@ -48,12 +74,12 @@ public class AnuncioController {
         try {
             //Recupera a foto da base de dados
             FotoService fotoService = new FotoService();
-            List<Anuncio> listAnuncios = service.readByCriteria(null);
+            List<Anuncio> listAnuncios = service.readByCriteria(new HashMap<Long, Object>(), null, null);
             List<String> listFotoAnuncios = new ArrayList<>();
             if (!listAnuncios.isEmpty()) {
                 List<Anuncio> listAdocao = new ArrayList<>();
                 for (Anuncio anuncio : listAnuncios) {
-                    if (anuncio.getTipo().equals("Adoção")) {
+                    if (anuncio.getTipo().equals("adocao") && anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name())) {
                         listAdocao.add(anuncio);
                         //Recupera a entidade Foto
                         Foto foto = fotoService.readById(anuncio.getFoto_id());
@@ -85,12 +111,12 @@ public class AnuncioController {
         try {
             //Recupera a foto da base de dados
             FotoService fotoService = new FotoService();
-            List<Anuncio> listAnuncios = service.readByCriteria(null);
+            List<Anuncio> listAnuncios = service.readByCriteria(new HashMap<Long, Object>(), null, null);
             List<String> listFotoAnuncios = new ArrayList<>();
             if (!listAnuncios.isEmpty()) {
                 List<Anuncio> listAdocao = new ArrayList<>();
                 for (Anuncio anuncio : listAnuncios) {
-                    if (anuncio.getTipo().equals("Perdido")) {
+                    if (anuncio.getTipo().equals("perdido") && anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name())) {
                         listAdocao.add(anuncio);
                         //Recupera a entidade Foto
                         Foto foto = fotoService.readById(anuncio.getFoto_id());
@@ -114,6 +140,48 @@ public class AnuncioController {
         return mv;
     }
 
+    @RequestMapping(value = "/posAdocao", method = RequestMethod.GET)
+    public ModelAndView readPosAdocao() {
+        ModelAndView mv = new ModelAndView("/posAdocao/posAdocao");
+        AnuncioService service = new AnuncioService();
+
+        try {
+            //Recupera a foto da base de dados
+            FotoService fotoService = new FotoService();
+            List<Anuncio> listAnuncios = service.readByCriteria(new HashMap<Long, Object>(), null, null);
+            List<String> listFotoAnuncios = new ArrayList<>();
+            if (!listAnuncios.isEmpty()) {
+                List<Anuncio> listAdocao = new ArrayList<>();
+                for (Anuncio anuncio : listAnuncios) {
+                    if (anuncio.getTipo().equals("adocao") && !anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name())) {
+                        listAdocao.add(anuncio);
+                        //Recupera a entidade Foto
+                        Foto foto = fotoService.readById(anuncio.getFoto_id());
+                        //Pega o arquivo no diretório
+                        byte[] byteArrayFoto = IOUtils.readFile(foto.getNome());
+                        //Converte para o padrão Base64 de imagens
+                        byte[] byteArrayFotoBase64 = Base64.getEncoder().encode(byteArrayFoto);
+                        //Insere na lista
+                        if (byteArrayFotoBase64 != null) {
+                            listFotoAnuncios.add(new String(byteArrayFotoBase64));
+                        }
+                    }
+                }
+                //usuario
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                HttpSession session = request.getSession();
+                String email = (String) session.getAttribute("usuarioLogado");
+                mv.addObject("usuarioLogado", email);
+                mv.addObject("anuncioList", listAdocao);
+                mv.addObject("anuncioImageList", listFotoAnuncios);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mv;
+    }
+
     @RequestMapping(value = "/anuncio/{id}/ver}", method = RequestMethod.GET)
     public ModelAndView showFormForVer() {
         ModelAndView mv = new ModelAndView("/anuncio/new");
@@ -125,7 +193,7 @@ public class AnuncioController {
         ModelAndView mv = new ModelAndView("/anuncio/new");
         AnuncioService service = new AnuncioService();
         try {
-            List<Anuncio> anuncioList = service.readByCriteria(null);
+            List<Anuncio> anuncioList = service.readByCriteria(new HashMap<Long, Object>(), null, null);
             mv.addObject("anuncioList", anuncioList);
         } catch (Exception ex) {
             //TODO resolver depois...
@@ -143,6 +211,19 @@ public class AnuncioController {
     @RequestMapping(value = "/anuncio/novo", method = RequestMethod.POST)
     public ModelAndView create(String tipo, String especie, String sexo, String porte, String idade, String caracteristica, String raca, MultipartFile foto, String recompensa, String local) {
         ModelAndView mv = new ModelAndView("redirect:/anuncio");
+
+        //Tipos
+        if (tipo.equals("Adoção")) {
+            tipo = TipoAnuncioEnum.adocao.name();
+        } else if (tipo.equals("Perdido")) {
+            tipo = TipoAnuncioEnum.perdido.name();
+        }
+
+        if (sexo.equals("Macho")) {
+            sexo = TipoSexoEnum.m.name();
+        } else if (tipo.equals("Fêmea")) {
+            sexo = TipoSexoEnum.f.name();
+        }
         //Nome do arquivo
         String nomeArquivo = especie + System.currentTimeMillis() + ConfiguracaoSistema.extensaoImagem;
         //Entidade foto
@@ -160,7 +241,7 @@ public class AnuncioController {
                 //cria no sgbd
                 fotoService.create(fotoEntity);
                 //recuperar para pegar o id
-                List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>());
+                List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>(), null, null);
                 fotoEntity = fotoList.get(fotoList.size() - 1);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -179,8 +260,9 @@ public class AnuncioController {
             anuncio.setPorte(porte);
             anuncio.setRaca(raca);
             anuncio.setSexo(sexo);
+            anuncio.setStatus(TipoStatusAnuncioEnum.pendente.name());
             anuncio.setFoto_id(fotoEntity.getId());
-            if (tipo != null && tipo.equals(TipoAnuncioEnum.Perdido.name())) {
+            if (tipo != null && tipo.equals(TipoAnuncioEnum.perdido.name())) {
                 anuncio.setRecompensa(recompensa);
                 anuncio.setLocal(local);
             }
@@ -191,12 +273,15 @@ public class AnuncioController {
             //salvar no banco Mock 
             //inserir id da imagem
             //anuncio.setFoto_id(Long.parseLong("foto"));
-            anuncio.setPessoaAnuncianteCpf(especie);
-            anuncio.getPessoaAdotanteCpf();
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpSession session = request.getSession();
+            String cpf = (String) session.getAttribute("pessoaCpfLogado");
+
+            anuncio.setPessoaAnuncianteCpf(cpf);
 
             EspecieService especieService = new EspecieService();
             try {
-                List<Especie> especieList = especieService.readByCriteria(null);
+                List<Especie> especieList = especieService.readByCriteria(new HashMap<Long, Object>(), null, null);
                 for (Especie entity : especieList) {
                     if (entity.getNome().equals(especie)) {
                         anuncio.setEspecie_id(entity.getId());
@@ -213,7 +298,113 @@ public class AnuncioController {
                 service.create(anuncio);
             } catch (Exception ex) {
                 //TODO resolver isso aqui...
+                ex.printStackTrace();
+
             }
+        }
+
+        return mv;
+
+    }
+
+    @RequestMapping(value = "/anuncio/{id}/read", method = RequestMethod.GET)
+    public ModelAndView read(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("/anuncio/read");
+
+        AnuncioService service = new AnuncioService();
+        EspecieService especieService = new EspecieService();
+
+        try {
+            Anuncio anuncio = service.readById(id);
+            Especie especie = especieService.readById(anuncio.getEspecie_id());
+            if (anuncio.getTipo().equals(TipoAnuncioEnum.adocao.name())) {
+                mv = new ModelAndView("/anuncio/adocao/read");
+            } else {
+                mv = new ModelAndView("/anuncio/perdido/read");
+            }
+
+            FotoService fotoService = new FotoService();
+            Foto foto = fotoService.readById(anuncio.getFoto_id());
+            //Pega o arquivo no diretório
+            byte[] byteArrayFoto = IOUtils.readFile(foto.getNome());
+            //Converte para o padrão Base64 de imagens
+            byte[] byteArrayFotoBase64 = Base64.getEncoder().encode(byteArrayFoto);
+            //Insere na lista
+            if (byteArrayFotoBase64 != null) {
+                mv.addObject("imageBase64", new String(byteArrayFotoBase64));
+            }
+
+            TimelineService timelineService = new TimelineService();
+            Map<Long, Object> criteriaTimeline = new HashMap<Long, Object>();
+
+            criteriaTimeline.put(TimelineCriteria.ANUNCIO_ID_EQ, id);
+            List<Timeline> timelineList = timelineService.readByCriteria(criteriaTimeline, null, null);
+            PessoaService pessoaService = new PessoaService();
+            List<Pessoa> pessoaList = pessoaService.readByCriteria(new HashMap<Long, Object>(), null, null);
+            List<Pessoa> pessoaTimilene = new ArrayList<>();
+            for (Timeline timeline1 : timelineList) {
+                for (Pessoa pessoa : pessoaList) {
+                    if (pessoa.getCpf().equals(timeline1.getPessoa_cpf())) {
+                        pessoaTimilene.add(pessoa);
+                        break;
+                    }
+                }
+            }
+            mv.addObject("pessoaTimeline", pessoaTimilene);
+            mv.addObject("timelineList", timelineList);
+            mv.addObject("anuncio", anuncio);
+            if (especie != null) {
+                mv.addObject("especie", especie);
+            }
+        } catch (Exception ex) {
+            //TODO resolver isso aqui...
+        }
+
+        return mv;
+
+    }
+
+    @RequestMapping(value = "/anuncio/{id}/read", method = RequestMethod.POST)
+    public ModelAndView showFormRead(@PathVariable Long id, String texto) throws Exception {
+        ModelAndView mv = new ModelAndView("redirect:/anuncio/" + id + "/read");
+        Timeline timeline = new Timeline();
+        timeline.setAnuncio_id(id);
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        String cpf = (String) session.getAttribute("pessoaCpfLogado");
+        timeline.setPessoa_cpf(cpf);
+        String email = (String) session.getAttribute("usuarioLogado");
+        mv.addObject("pessoaCpfLogado", cpf);
+        mv.addObject("usuarioLogado", email);
+        timeline.setTexto(texto);
+        timeline.setAnuncio_id(id);
+        timeline.setData_hora(new Timestamp(System.currentTimeMillis()));
+        try {
+            TimelineService timelineService = new TimelineService();
+            timelineService.create(timeline);
+        } catch (Exception ex) {
+            Logger.getLogger(AnuncioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            TimelineService timelineService = new TimelineService();
+            Map<Long, Object> criteriaTimeline = new HashMap<Long, Object>();
+            criteriaTimeline.put(TimelineCriteria.ANUNCIO_ID_EQ, id);
+            List<Timeline> timelineList = timelineService.readByCriteria(criteriaTimeline, null, null);
+            PessoaService pessoaService = new PessoaService();
+            List<Pessoa> pessoaList = pessoaService.readByCriteria(new HashMap<Long, Object>(), null, null);
+            List<Pessoa> pessoaTimilene = new ArrayList<>();
+            for (Timeline timeline1 : timelineList) {
+                for (Pessoa pessoa : pessoaList) {
+                    if (pessoa.getCpf().equals(timeline1.getPessoa_cpf())) {
+                        pessoaTimilene.add(pessoa);
+                        break;
+                    }
+                }
+            }
+            mv.addObject("pessoaTimeline", pessoaTimilene);
+            mv.addObject("timelineList", timelineList);
+        } catch (Exception e) {
         }
 
         return mv;
@@ -247,10 +438,23 @@ public class AnuncioController {
     @RequestMapping(value = "/anuncio/{anuncioId}/update", method = RequestMethod.POST)
     public ModelAndView update(@PathVariable String anuncioId, String tipo, String nome, String raca, String especie, String sexo, String porte, String idade, String caracteristica, MultipartFile foto, String recompensa, String local) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        ModelAndView mv = new ModelAndView("redirect:/anuncio/");
+        ModelAndView mv = new ModelAndView("redirect:/anuncio");
         AnuncioService service = new AnuncioService();
+
+        //Tipos
+        if (tipo.equals("Adoção")) {
+            tipo = TipoAnuncioEnum.adocao.name();
+        } else if (tipo.equals("Perdido")) {
+            tipo = TipoAnuncioEnum.perdido.name();
+        }
+
+        if (sexo.equals("Macho")) {
+            sexo = TipoSexoEnum.m.name();
+        } else if (tipo.equals("Fêmea")) {
+            sexo = TipoSexoEnum.f.name();
+        }
         Foto fotoEntity = null;
-        if (foto != null || !foto.isEmpty()) {
+        if (foto != null && !foto.isEmpty() && foto.getSize() > 0) {
             String nomeArquivo = nome + System.currentTimeMillis() + ConfiguracaoSistema.extensaoImagem;
             //Entidade foto
 
@@ -268,7 +472,7 @@ public class AnuncioController {
                     //cria no sgbd
                     fotoService.create(fotoEntity);
                     //recuperar para pegar o id
-                    List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>());
+                    List<Foto> fotoList = fotoService.readByCriteria(new HashMap<Long, Object>(), null, null);
                     fotoEntity = fotoList.get(fotoList.size() - 1);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -290,7 +494,7 @@ public class AnuncioController {
             anuncio.setPorte(porte);
             anuncio.setRaca(raca);
             anuncio.setSexo(sexo);
-            if (tipo != null && tipo.equals(TipoAnuncioEnum.Perdido.name())) {
+            if (tipo != null && tipo.equals(TipoAnuncioEnum.perdido.name())) {
                 anuncio.setRecompensa(recompensa);
                 anuncio.setLocal(local);
             }
@@ -302,13 +506,86 @@ public class AnuncioController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            mv = new ModelAndView("redirect:/anuncio/");
+            mv = new ModelAndView("/anuncio/list");
         }
 
         return mv;
     }
 
-    @RequestMapping(value = "/anuncio/{id}/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "/anuncio/{id}/status", method = RequestMethod.GET)
+    public ModelAndView updateStatus(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("redirect:/anuncio/");
+
+        AnuncioService service = new AnuncioService();
+        EspecieService especieService = new EspecieService();
+
+        try {
+            Anuncio anuncio = service.readById(id);
+            Especie especie = especieService.readById(anuncio.getEspecie_id());
+            if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.adocao.name())) {
+                anuncio.setStatus(TipoStatusAnuncioEnum.adotado.name());
+            } else if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.perdido.name())) {
+                anuncio.setStatus(TipoStatusAnuncioEnum.encontrado.name());
+            } else {
+                anuncio.setStatus(TipoStatusAnuncioEnum.pendente.name());
+            }
+            AnuncioService anuncioService = new AnuncioService();
+            anuncioService.update(anuncio);
+            mv.addObject("anuncio", anuncio);
+
+            if (especie != null) {
+
+                mv.addObject("especie", especie);
+            }
+        } catch (Exception ex) {
+            //TODO resolver isso aqui...
+        }
+
+        return mv;
+
+    }
+
+    @RequestMapping(value = "/anuncio/{id}/read/status", method = RequestMethod.GET)
+    public ModelAndView updateStatusDetalhe(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("redirect:/anuncio/");
+
+        AnuncioService service = new AnuncioService();
+        EspecieService especieService = new EspecieService();
+
+        try {
+            Anuncio anuncio = service.readById(id);
+            Especie especie = especieService.readById(anuncio.getEspecie_id());
+            if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.adocao.name())) {
+                anuncio.setStatus(TipoStatusAnuncioEnum.adotado.name());
+                mv = new ModelAndView("redirect:/adocao/");
+            } else if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.perdido.name())) {
+                anuncio.setStatus(TipoStatusAnuncioEnum.encontrado.name());
+                mv = new ModelAndView("redirect:/perdido/");
+            } else {
+                anuncio.setStatus(TipoStatusAnuncioEnum.pendente.name());
+            }
+            AnuncioService anuncioService = new AnuncioService();
+
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpSession session = request.getSession();
+            String cpf = (String) session.getAttribute("pessoaCpfLogado");
+            anuncio.setPessoaAdotanteCpf(cpf);
+            anuncioService.update(anuncio);
+            mv.addObject("anuncio", anuncio);
+
+            if (especie != null) {
+
+                mv.addObject("especie", especie);
+            }
+        } catch (Exception ex) {
+            //TODO resolver isso aqui...
+        }
+
+        return mv;
+
+    }
+
+    @RequestMapping(value = "/anuncio/{id}/excluir", method = RequestMethod.GET)
     public ModelAndView delete(@PathVariable Long id) {     //@PathVariable injeta o valor da url e converte o valor. OBS: o nome na url tem de ser igual ao do parametro
         ModelAndView mv = new ModelAndView("redirect:/anuncio");
 

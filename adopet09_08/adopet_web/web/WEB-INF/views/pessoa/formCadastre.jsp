@@ -28,107 +28,119 @@
 
     </head>
     <body>
+        <jsp:include page = "/WEB-INF/views/componentes/menu.jsp"/>
 
-        <div class="container">
-            <c:if test="${empty anuncio}">
-                <h1>Novo Cadastro</h1>
-            </c:if>
+        <div class="container-fluid">
 
-            <c:if test="${not empty anuncio}">
-                <h1>Editar Cadastro</h1>
-            </c:if>
-            <form method="post" enctype="multipart/form-data">
-                <div class="jumbotron" left="30px" top="20px" rigth="30px">
+            <div class="col-lg-1"></div>
+            <div class="panel panel-default col-lg-10 col-md-10 full-height js-full-height">
+                <div class="panel-heading full-height">
+                    <c:if test="${empty anuncio}">
+                        <h1>Novo Cadastro</h1>
+                    </c:if>
 
-                    <div class="row">
-                        <input type="hidden" value="${usuario.id}" name="usuarioId"/>
-                        <input type="hidden" value="${pessoa.id}" name="pessoaId"/>
-                        <div class="col-xs-5">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" name="email" id="email" value = "${usuario.email}"/>
+                    <c:if test="${not empty anuncio}">
+                        <h1>Editar Cadastro</h1>
+                    </c:if>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <input type="hidden" value="${usuario.id}" name="usuarioId"/>
+                            <input type="hidden" value="${pessoa.id}" name="pessoaId"/>
+                            <div class="form-group col-lg-6">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" value = "${usuario.email}"/>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label for="senha">Senha</label>
+                                <input type="password" class="form-control" name="senha" id="senha" value = "${usuario.senha}"/>
+                            </div>
+
+                            <div class="form-group col-lg-6">
+                                <label for="nome">Nome</label>
+                                <input type="text" class="form-control" name="nome" id="nome" value = "${pessoa.nome}"/>
+                            </div>
+
+
+                            <div class="form-group col-lg-6">
+                                <label for="cpf">CPF</label>
+                                <input type="text" class="form-control" name="cpf" id="cpf" value = "${pessoa.cpf}"/>
+                            </div>
+
+
+                            <div class="form-group col-lg-5">
+                                <label for="logradouro">Logradouro</label>
+                                <input type="text" class="form-control" name="logradouro" id="logradouro" value = "${pessoa.logradouro}"/>
+                            </div>
+
+                            <div class="form-group col-lg-2">
+                                <label for="numero">Numero</label>
+                                <input type="number" class="form-control" name="numero" id="numero" value = "${pessoa.numero}"/>
+                            </div>
+
+                            <div class="form-group col-lg-5">
+                                <label for="complemento">Complemento</label>
+                                <input type="text" class="form-control" name="complemento" id="complemento" value = "${pessoa.complemento}"/>
+                            </div>
+
+                            <div class="form-group col-lg-4">
+                                <label for="cidade">Cidade</label>
+                                <input type="text" class="form-control" name="cidade" id="cidade" value = "${pessoa.cidade}"/>
+                            </div>
+
+                            <div class="form-group col-lg-4">
+                                <label for="bairro">Bairro</label>
+                                <input type="text" class="form-control" name="bairro" id="bairro" value = "${pessoa.bairro}"/>
+                            </div>
+
+                            <div class="form-group col-lg-4">
+                                <label for="uf">UF</label>
+                                <input type="text" class="form-control" name="uf" id="uf" value = "${pessoa.estado}"/>
+                            </div>
+
+                            <div class="form-group col-lg-4">
+                                <label for="telefone">Telefone</label>
+                                <input type="text" class="form-control" name="telefone" id="telefone" value = "${telefone.telefone}"/>
+                            </div>
+
+                            <div class="form-group col-lg-4">
+                                <label for="celular">Celular</label>
+                                <input type="text" class="form-control" name="celular" id="celular" value = "${telefone.celular}"/>
+                            </div>
+
+                            <div class="form-group col-lg-4">
+                                <label for="file">Foto</label>
+                                <input type="file"  class="form-control" name="foto" id="foto" />
+                                <p class="help-block">Realizar upload de um arquivo jpeg.</p>
+                            </div>
+
+
+                            <div class="col-xs-3">
+                                <br>
+                                <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
+                            </div>
+
+
+                            <div class="col-xs-3 ">
+                                <br>
+                                <a class="btn btn-default" href="<c:url value="/home"/>">Cancelar Cadastro</a>
+                            </div>
                         </div>
-                        <div class="col-xs-5">
-                            <label for="senha">Senha</label>
-                            <input type="password" class="form-control" name="senha" id="senha" value = "${usuario.senha}"/>
-                        </div>
+                    </div>     
 
-                        <div class="col-xs-5">
-                            <label for="nome">Nome</label>
-                            <input type="text" class="form-control" name="nome" id="nome" value = "${pessoa.nome}"/>
-                        </div>
+                </form>
+            </div>  
+        </div>
 
 
-                        <div class="col-xs-5">
-                            <label for="cpf">CPF</label>
-                            <input type="text" class="form-control" name="cpf" id="cpf" value = "${pessoa.cpf}"/>
-                        </div>
-
-
-                        <div class="col-xs-5">
-                            <label for="logradouro">Logradouro</label>
-                            <input type="text" class="form-control" name="logradouro" id="logradouro" value = "${pessoa.logradouro}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="numero">Numero</label>
-                            <input type="number" class="form-control" name="numero" id="numero" value = "${pessoa.numero}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="complemento">Complemento</label>
-                            <input type="text" class="form-control" name="complemento" id="complemento" value = "${pessoa.complemento}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="cidade">Cidade</label>
-                            <input type="text" class="form-control" name="cidade" id="cidade" value = "${pessoa.cidade}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="bairro">Bairro</label>
-                            <input type="text" class="form-control" name="bairro" id="bairro" value = "${pessoa.bairro}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="uf">UF</label>
-                            <input type="text" class="form-control" name="uf" id="uf" value = "${pessoa.estado}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="telefone">Telefone</label>
-                            <input type="text" class="form-control" name="telefone" id="telefone" value = "${telefone.telefone}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="celular">Celular</label>
-                            <input type="text" class="form-control" name="celular" id="celular" value = "${telefone.celular}"/>
-                        </div>
-
-                        <div class="col-xs-5">
-                            <label for="file">Foto</label>
-                            <input type="file"  class="form-control" name="foto" id="foto" />
-                            <p class="help-block">Realizar upload de um arquivo jpeg.</p>
-                        </div>
-
-
-                        <div class="col-xs-3">
-                            <br>
-                            <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
-                        </div>
-
-                      
-                        <div class="col-xs-3 ">
-                            <br>
-                            <a class="btn btn-default" href="<c:url value="/home"/>">Cancelar Cadastro</a>
-                        </div>
-                    </div>
-                </div>     
-            </form>
-
-            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-            <script src="<c:url value="/resources/js/jquery.js"/>"</script>
-            <!-- Include all compiled plugins (below), or include individual files as needed -->
-            <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="<c:url value="/resources/js/jquery.js"/>"</script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="<c:url value="/resources/js/bootstrap.min.js"/>"</script>
+        <jsp:include page = "/WEB-INF/views/componentes/footer.jsp"/>    
     </body>
 
 </html>

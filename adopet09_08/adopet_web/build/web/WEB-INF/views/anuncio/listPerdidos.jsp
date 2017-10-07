@@ -40,10 +40,10 @@
 
             <div class="row">
                 <div class="box">
-                  
+
                     <div class="col-lg-12">
                         <hr>
-                        <h2 class="intro-text text-center">Company
+                        <h2 class="intro-text text-center">AdoPet
                             <strong>blog</strong>
                         </h2>
                         <hr>
@@ -53,14 +53,15 @@
 
                         <div class="col-lg-12 text-center">
                             <img class="img-responsive img-border img-full" src="img/slide-1.jpg" alt="">
-                            <h2>${anuncio.raca}
+                            <h2>Raça: ${anuncio.raca}
                                 <br>
-                                <small>${anuncio.sexo}</small>
+                                <small>Sexo: ${anuncio.sexo}</small>
                             </h2>
-                            <p>${anuncio.caracteristicas}</p>
-                             <img src="data:image/jpeg;base64,${anuncioImageList[loop.index]}" style="height:200px;width:300px"/>
-                             <br/> <br/>
-                             <a href="#" class="btn btn-default btn-lg">Read More</a>
+                            <img src="data:image/jpeg;base64,${anuncioImageList[loop.index]}" style="height:200px;width:300px"/>
+                            <br><br>
+                            <p>Caracteristicas:${anuncio.caracteristicas}</p>
+                            <br>
+                            <a href="<c:url value="/anuncio/${anuncio.id}/read"/>" class="btn btn-default btn-lg">Detalhes...</a>
                             <hr>
                         </div>
                     </c:forEach>

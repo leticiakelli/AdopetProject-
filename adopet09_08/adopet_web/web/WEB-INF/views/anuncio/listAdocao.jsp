@@ -35,45 +35,43 @@
 
     <body>
 
-       
-
-       
-
         <jsp:include page = "/WEB-INF/views/componentes/menu.jsp" />
 
         <div class="container">
 
             <div class="row">
                 <div class="box">
-                  
+
                     <div class="col-lg-12">
                         <hr>
-                        <h2 class="intro-text text-center">Company
-                            <strong>blog</strong>
+                        <h2 class="intro-text text-center" style="color:#035fc2">Anúncio
+                            <strong  style="color:#035fc2">Adoção</strong>
                         </h2>
                         <hr>
-
                     </div>
-                    <c:forEach items="${anuncioList}" var="anuncio" varStatus="loop">
 
+                    <c:forEach items="${anuncioList}" var="anuncio" varStatus="loop">
 
                         <div class="col-lg-12 text-center">
                             <img class="img-responsive img-border img-full" src="img/slide-1.jpg" alt="">
-                            <h2>${anuncio.raca}
+                            <h2>Raça: ${anuncio.raca}
                                 <br>
-                                <small>${anuncio.sexo}</small>
+                                <small>Sexo: ${anuncio.sexo}</small>
                             </h2>
-                            <p>${anuncio.caracteristicas}</p>
-                            <a href="#" class="btn btn-default btn-lg">Read More</a>
-                            <hr>
+                            <h2>Espécie: ${especie.nome}</h2>
                             <img src="data:image/jpeg;base64,${anuncioImageList[loop.index]}" style="height:200px;width:300px"/>
+                            <br> <br> 
+                            <p>Caracteristicas: ${anuncio.caracteristicas}</p>
+                            <br> 
+                            <a href="<c:url value="/anuncio/${anuncio.id}/read"/>" class="btn btn-default btn-lg">Detalhes...</a>
+                            <hr>
                         </div>
                     </c:forEach>
                     <div class="col-lg-12 text-center">
                         <ul class="pager">
-                            <li class="previous"><a href="#">&larr; Older</a>
+                            <li class="previous"><a href="#">&larr; antigo</a>
                             </li>
-                            <li class="next"><a href="#">Newer &rarr;</a>
+                            <li class="next"><a href="#">novo &rarr;</a>
                             </li>
                         </ul>
                     </div>
@@ -83,17 +81,7 @@
         </div>
         <!-- /.container -->
 
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12 text-center">
-                        <p>Copyright &copy; Your Website 2014</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-
+        <jsp:include page = "/WEB-INF/views/componentes/footer.jsp" />
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="<c:url value="/resources/js/jquery.js"/>"</script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->

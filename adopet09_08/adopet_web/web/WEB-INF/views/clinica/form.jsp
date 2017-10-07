@@ -61,8 +61,8 @@
                                         name="tipo">
 
                                     <option value="">Selecione...</option>
-                                    <option <c:if test="${anuncio.tipo eq 'Adoção'}">selected</c:if>value="Adoção">Adoção</option>
-                                    <option <c:if test="${anuncio.tipo eq 'Perdido'}">selected</c:if>value="Perdido">Perdido</option>
+                                    <option <c:if test="${anuncio.tipo eq 'adocao'}">selected</c:if>value="adocao">Adoção</option>
+                                    <option <c:if test="${anuncio.tipo eq 'perdido'}">selected</c:if>value="perdidof">Perdido</option>
                                     </select>
                                 </div>
                            

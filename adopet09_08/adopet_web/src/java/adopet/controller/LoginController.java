@@ -6,10 +6,12 @@ import adopet.model.entity.Pessoa;
 import adopet.model.entity.Usuario;
 import adopet.model.service.PessoaService;
 import adopet.model.service.UsuarioService;
+import adopet.utils.EmailHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class loginController {
+public class LoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView create() {
@@ -171,4 +173,49 @@ public class loginController {
 
     }
 
+    @RequestMapping(value = "/recuperarSenha", method = RequestMethod.GET)
+    public ModelAndView recoverPassword() {
+        ModelAndView mv = new ModelAndView("/login/recuperar");
+        return mv;
+    }
+
+    @RequestMapping(value = "/recuperarSenha", method = RequestMethod.POST)
+    public ModelAndView recoverPassword(String email) {
+        ModelAndView mv = new ModelAndView("/login/recuperar");
+        List<String> errorList = new ArrayList<>();
+
+        if (email != null && !email.isEmpty()) {
+
+            Map<Long, Object> criteriaMap = new HashMap<>();
+            criteriaMap.put(UsuarioCriteria.EMAIL_EQ, email);
+            UsuarioService usuarioService = new UsuarioService();
+            List<Usuario> usuarioList = new ArrayList<>();
+            try {
+                usuarioList = usuarioService.readByCriteria(criteriaMap, null, null);
+            } catch (Exception ex) {
+                Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (!usuarioList.isEmpty()) {
+                usuarioList.get(0).setSenha(new Random().nextInt(10000) + "alterar");
+                boolean enviado = EmailHelper.sendEmail("smtp.gmail.com", 465, usuarioList.get(0).getEmail(), "Usuário AdoPet", "projetoadopet2017@gmail.com",
+                        "AdoPet", "Recuperar senha", "Sua nova senha para acesso é:" + usuarioList.get(0).getSenha(), "projeto.adopet");
+                if (enviado) {
+                    try {
+                        usuarioService.updateBySenha(usuarioList.get(0));
+                    } catch (Exception ex) {
+                        Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } else {
+                errorList.add("Usuário não cadastrado");
+
+            }
+        } else {
+            errorList.add("Campo email é obrigatório");
+        }
+        mv.addObject("errorList", errorList);
+        return mv;
+    }
+
+   
 }

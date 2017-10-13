@@ -1,6 +1,7 @@
 package adopet.controller;
 
 import adopet.model.criteria.PessoaCriteria;
+import adopet.model.criteria.PessoaTelefoneCriteria;
 import adopet.model.criteria.UsuarioCriteria;
 import adopet.utils.ConfiguracaoSistema;
 import adopet.model.entity.Foto;
@@ -12,7 +13,6 @@ import adopet.model.service.PessoaService;
 import adopet.model.service.PessoaTelefoneService;
 import adopet.model.service.UsuarioService;
 import adopet.utils.IOUtils;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,7 +196,6 @@ public class PessoaController {
             errors.add("Verifique os campos");
         }
         mv.addObject("errors", errors);
-        //Um teste
 
         return mv;
 
@@ -214,7 +213,9 @@ public class PessoaController {
             UsuarioService serviceUsuario = new UsuarioService();
             try {
                 //TODO: inserir criteria
-                List<Usuario> usuarioList = serviceUsuario.readByCriteria(new HashMap<Long, Object>(), null, null);
+                Map<Long, Object> criteria = new HashMap<Long, Object>();
+                criteria.put(UsuarioCriteria.EMAIL_EQ, email);
+                List<Usuario> usuarioList = serviceUsuario.readByCriteria(criteria, null, null);
                 if (usuarioList != null && !usuarioList.isEmpty()) {
                     for (Usuario usuario : usuarioList) {
                         if (usuario.getEmail().equals(email)) {
@@ -222,28 +223,31 @@ public class PessoaController {
                             //pessoa
                             PessoaService service = new PessoaService();
                             try {
-                                List<Pessoa> pessoaList = service.readByCriteria(new HashMap<Long, Object>(), null, null);
-                                for (Pessoa pessoa : pessoaList) {
-                                    if (usuario.getId() == pessoa.getUsuario_id()) {
+                                Map<Long, Object> criteriaPessoa = new HashMap<Long, Object>();
+                                criteriaPessoa.put(PessoaCriteria.USUARIO_ID_EQ, usuario.getId());
+                                List<Pessoa> pessoaList = service.readByCriteria(criteriaPessoa, null, null);
 
-                                        //Pessoa telefone
-                                        PessoaTelefoneService pessoaTelefoneService = new PessoaTelefoneService();
-                                        try {
-                                            List<PessoaTelefone> pessoaTelefoneList = pessoaTelefoneService.readByCriteria(new HashMap<Long, Object>(), null, null);
-                                            for (PessoaTelefone pessoaTelefoneEntity : pessoaTelefoneList) {
-                                                if (pessoa.getPessoaTelefone_id() == pessoaTelefoneEntity.getId()) {
-                                                    mv.addObject("usuario", usuario);
-                                                    mv.addObject("pessoa", pessoa);
-                                                    mv.addObject("telefone", pessoaTelefoneEntity);
-                                                    break;
-                                                }
+                                if (pessoaList != null && !pessoaList.isEmpty()) {
+                                    Pessoa pessoa = pessoaList.get(0);
+                                    //Pessoa telefone
+                                    PessoaTelefoneService pessoaTelefoneService = new PessoaTelefoneService();
+                                    try {
+
+                                        List<PessoaTelefone> pessoaTelefoneList = pessoaTelefoneService.readByCriteria(new HashMap<Long, Object>(), null, null);
+                                        for (PessoaTelefone pessoaTelefoneEntity : pessoaTelefoneList) {
+                                            if (pessoa.getPessoaTelefone_id().equals(pessoaTelefoneEntity.getId())) {
+                                                mv.addObject("usuario", usuario);
+                                                mv.addObject("pessoa", pessoa);
+                                                mv.addObject("telefone", pessoaTelefoneEntity);
+                                                break;
                                             }
-                                        } catch (Exception ex) {
-                                            //TODO resolver depois...
                                         }
-                                        break;
+                                    } catch (Exception ex) {
+                                        //TODO resolver depois...
                                     }
+                                    break;
                                 }
+
                             } catch (Exception ex) {
                                 //TODO resolver depois...
                             }
@@ -301,14 +305,20 @@ public class PessoaController {
                 System.err.println("Não salvou o arquivo");
             }
         }
+
+        //Pega usuário logado 
+        //usuario
+        HttpSession session = request.getSession();
+        String emailUsuarioLogado = (String) session.getAttribute("usuarioLogado");
+
+        UsuarioService serviceUsuario = new UsuarioService();
+
         UsuarioService usuarioService = new UsuarioService();
         Usuario usuario = new Usuario();
         usuario.setEmail(email);
-        usuario.setSenha(senha);
 
         if (usuario.getEmail() != null
-                && !usuario.getEmail().isEmpty() && usuario.getSenha() != null
-                && !usuario.getSenha().isEmpty()) {
+                && !usuario.getEmail().isEmpty()) {
             Usuario usuarioLogado = null;
             List<Usuario> listUsuario = new ArrayList<Usuario>();
             try {
@@ -373,8 +383,58 @@ public class PessoaController {
             }
 
         }
-
         return mv;
 
+    }
+    
+     @RequestMapping(value = "/pessoa/cadastro/updatePassword", method = RequestMethod.GET)
+    public ModelAndView updatePassword() {
+        ModelAndView mv = new ModelAndView("/pessoa/formUpdatePassword");
+        return mv;
+    }
+
+    @RequestMapping(value = "/pessoa/cadastro/updatePassword", method = RequestMethod.POST)
+    public ModelAndView updatePassword(String oldPassword, String newPassword) {
+        ModelAndView mv = new ModelAndView("redirect:/home");
+        List<String> errorList = new ArrayList<>();
+
+        if (oldPassword != null && !oldPassword.isEmpty() && newPassword != null && !newPassword.isEmpty()) {
+            //usuario
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpSession session = request.getSession();
+            String email = (String) session.getAttribute("usuarioLogado");
+
+            UsuarioService serviceUsuario = new UsuarioService();
+
+            //TODO: inserir criteria
+            Map<Long, Object> criteria = new HashMap<Long, Object>();
+            criteria.put(UsuarioCriteria.EMAIL_EQ, email);
+            criteria.put(UsuarioCriteria.SENHA_EQ, oldPassword);
+            Usuario usuarioLogado = null;
+            try {
+                List<Usuario> usuarioList = serviceUsuario.readByCriteria(criteria, null, null);
+                if (!usuarioList.isEmpty()) {
+                    usuarioLogado = usuarioList.get(0);
+                } else {
+                    errorList.add("Senha antiga incorreta");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            if (usuarioLogado != null) {
+                usuarioLogado.setSenha(newPassword);
+                UsuarioService service = new UsuarioService();
+                try {
+                    service.updateBySenha(usuarioLogado);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } else {
+            errorList.add("Verifique os campos");
+        }
+
+        mv.addObject("errorList", errorList);
+        return mv;
     }
 }

@@ -106,10 +106,23 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
     @Override
     public void update(Connection conn, Usuario entity) throws Exception {
         String sql = "UPDATE usuario SET  email=? WHERE id=?;";
+
         PreparedStatement statement = conn.prepareStatement(sql);
         int i = 0;
         statement.setString(++i, entity.getEmail());
-     //   statement.setString(++i, entity.getSenha());
+//        statement.setString(++i, entity.getSenha());
+        statement.setLong(++i, entity.getId());
+        statement.execute();
+        statement.close();
+    }
+    
+    public void updateBySenha(Connection conn, Usuario entity) throws Exception {
+        String sql = "UPDATE usuario SET  email=?, senha=md5('Repolho'||?||'Paralelepipedo') WHERE id=?;";
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+        int i = 0;
+        statement.setString(++i, entity.getEmail());
+        statement.setString(++i, entity.getSenha());
         statement.setLong(++i, entity.getId());
         statement.execute();
         statement.close();

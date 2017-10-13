@@ -94,6 +94,20 @@ public class UsuarioService implements BaseUsuarioService {
             throw e;
         }
     }
+    @Override
+     public void updateBySenha(Usuario entity) throws Exception {
+        Connection conn = ConnectionManager.getInstance().getConnection();
+        try {
+            UsuarioDAO dao = new UsuarioDAO();
+            dao.updateBySenha(conn, entity);
+            conn.commit();
+            conn.close();
+        } catch (Exception e) {
+            conn.rollback();
+            conn.close();
+            throw e;
+        }
+    }
 
     @Override
     public void delete(Long id) throws Exception {

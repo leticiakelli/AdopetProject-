@@ -35,11 +35,11 @@
             <div class="col-lg-1"></div>
             <div class="panel panel-default col-lg-10 col-md-10 full-height js-full-height">
                 <div class="panel-heading full-height">
-                    <c:if test="${empty anuncio}">
+                    <c:if test="${empty usuarioLogado}">
                         <h1>Novo Cadastro</h1>
                     </c:if>
 
-                    <c:if test="${not empty anuncio}">
+                    <c:if test="${not empty usuarioLogado}">
                         <h1>Editar Cadastro</h1>
                     </c:if>
                 </div>
@@ -50,20 +50,23 @@
                         <div class="row">
                             <input type="hidden" value="${usuario.id}" name="usuarioId"/>
                             <input type="hidden" value="${pessoa.id}" name="pessoaId"/>
+
+
                             <div class="form-group col-lg-6">
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" name="email" id="email" value = "${usuario.email}"/>
                             </div>
-                            <div class="form-group col-lg-6">
-                                <label for="senha">Senha</label>
-                                <input type="password" class="form-control" name="senha" id="senha" value = "${usuario.senha}"/>
-                            </div>
+                            <c:if test="${empty usuarioLogado}">
+                                <div class="form-group col-lg-6">
+                                    <label for="senha">Senha</label>
+                                    <input type="password" class="form-control" name="senha" id="senha" value = "${usuario.senha}"/>
+                                </div>
+                            </c:if>
 
                             <div class="form-group col-lg-6">
                                 <label for="nome">Nome</label>
                                 <input type="text" class="form-control" name="nome" id="nome" value = "${pessoa.nome}"/>
                             </div>
-
 
                             <div class="form-group col-lg-6">
                                 <label for="cpf">CPF</label>
@@ -117,24 +120,29 @@
                                 <p class="help-block">Realizar upload de um arquivo jpeg.</p>
                             </div>
 
+                            <c:if test="${empty usuarioLogado}">
+                                <div class="col-xs-3">
+                                    <br>
+                                    <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
+                                </div>
+                            </c:if>
 
-                            <div class="col-xs-3">
-                                <br>
-                                <button type="submit" class="btn btn-info">Confirmar Cadastro</button>
-                            </div>
-
-
-                            <div class="col-xs-3 ">
-                                <br>
-                                <a class="btn btn-default" href="<c:url value="/home"/>">Cancelar Cadastro</a>
-                            </div>
+                            <c:if test="${not empty usuarioLogado}">
+                                <div class="col-xs-3 ">
+                                    <br>
+                                    <button type="submit" class="btn btn-default">Alterar Dados</button>
+                                </div>
+                                <div class="col-xs-3 ">
+                                    <br>
+                                    <a class="btn btn-default" href="<c:url value="updatePassword"/>">Alterar Senha</a>
+                            </c:if>
                         </div>
                     </div>     
 
                 </form>
             </div>  
         </div>
-
+        </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="<c:url value="/resources/js/jquery.js"/>"</script>

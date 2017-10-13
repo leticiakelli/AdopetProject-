@@ -74,7 +74,7 @@
 
                         <!--                    <button type="submit" class="btn btn-info">Confirmar</button>  -->
                         <br>
-                        <button type="button" class="btn btn-link">Esqueceu a senha?</button>
+                        <a type="button" class="btn btn-link" href="<c:url value="/recuperarSenha"></c:url>" >Esqueceu a senha?</a>
                         <br>
                         <p class="text-center">ou</p>
 

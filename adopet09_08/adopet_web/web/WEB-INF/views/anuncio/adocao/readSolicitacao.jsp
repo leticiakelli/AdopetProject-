@@ -36,17 +36,17 @@
                 <div class="row">
                     <div class="form-group col-lg-6  rounded float-right">
                         <img src="data:image/jpeg;base64,${imageBase64}" class="rounded float-right"  style="height:200px;width:300px;"/>
-                       
+
                         <br>
                         <br>
                         <div>
-                        <c:if test="${anuncio.status == 'adotado'}"> 
-                            <a class="btn btn-info" href="<c:url value="/home"/>">Sair</a>
-                        </c:if>
-                        <c:if test="${anuncio.status == 'pendente'}"> 
-                            <a href="<c:url value="/anuncio/${anuncio.id}/read/status"/>" type="submit" class="btn btn-info">Adotar</a>    
-                            <a class="btn btn-default" href="<c:url value="/anuncio"/>">Cancelar</a>
-                        </c:if></div>
+                            <c:if test="${anuncio.status == 'adotado'}"> 
+                                <a class="btn btn-info" href="<c:url value="/home"/>">Sair</a>
+                            </c:if>
+                            <c:if test="${anuncio.status == 'pendente'}"> 
+                                <a href="<c:url value="/anuncio/${anuncio.id}/read/status"/>" type="submit" class="btn btn-info">Adotar</a>    
+                                <a class="btn btn-default" href="<c:url value="/anuncio"/>">Cancelar</a>
+                            </c:if></div>
                     </div>
                     <div class="form-group col-lg-6">
                         <input type="hidden" value="${anuncio.id}" name="anuncioId"/>
@@ -83,41 +83,45 @@
                     <div id="formPerdido" style="display: none">
 
                         <div class="col - xs - 5">
-                            <label for="recompensa">Recompensa</label>
-                            <input type="text" class="form - control" name="recompensa" id="recompensa" value = "${anuncio.recompensa}" />
+                            <h3 style="color:#000">Recompensa: ${anuncio.recompensa}</h3>
                         </div>
                         <div class="col - xs - 5">
-                            <label for="local">Local</label>
-                            <input type="text" class="form - control" name="local" id="local" value = "${anuncio.local}" />
+                            <h3 style="color:#000">Local: ${anuncio.local}</h3>
                         </div>
                     </div>
 
+                    <div >
+                        <h3 style="color:#000">Pessoa Solicitante: ${solicitante.nome}</h3>
+                    </div>
+                    
+                     <div >
+                        <h3 style="color:#000">Telefone do solicitante: ${telefone.celular}</h3>
+                    </div>
 
+                    <!--daqui para cima vc mostra os dados do anuncio e da pessoa solicitante-->
 
                     <c:if test="${not empty usuarioLogado}">
                         <div class="container">
-                            <h3 style="color:#000">Envie suas duvidas!</h3>
-                            <form method="post">
+                            <form method="post" action="/adopet-web/anuncio/${anuncio.id}/readSolicitacao/confirm">
                                 <div class="container"> 
-                                    <div class="form-group">
-                                        <label for="comment">Dúvida:</label>
-                                        <textarea class="form-control " rows="5" name="texto" ></textarea>
-                                    </div>
+                                    <!--                                  Se clicar aqui a solicitacao é aprovada-->
                                     <div>
-                                        <button type="submit" class="btn btn-success">Enviar</button>
+                                        <button type="submit" class="btn btn-success">Aprovar solicitação</button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            <form method="post" action="/adopet-web/anuncio/${anuncio.id}/readSolicitacao/delete">
+                                <div class="container"> 
+                                    <!--                                  Se clicar aqui a solicitacao é reprovada-->
+                                    <div>
+                                        <button type="submit" class="btn btn-success">Remover solicitação</button>
                                     </div>
                                 </div>
 
                             </form>
                         </c:if>
-                            <br>
-                        <c:forEach items="${timelineList}" var="timeline" varStatus="loop">
-                            <h4 style="color:#000">${pessoaTimeline[loop.index].nome}</h4>
-                            <br>
-                            <h4 style="color:#000">${timeline.texto}</h4>
-                            <br>
-                            <!--<textarea class="form-control" rows="5" name="resposta" disabled >${timeline.texto}</textarea>-->
-                        </c:forEach>
                     </div>
                 </div>
             </div>

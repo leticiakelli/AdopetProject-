@@ -6,17 +6,12 @@ import adopet.model.entity.Anuncio;
 import adopet.model.entity.Especie;
 import adopet.model.entity.Foto;
 import adopet.model.entity.Pessoa;
-import adopet.model.entity.PessoaTelefone;
-import adopet.model.entity.Post;
 import adopet.model.entity.Timeline;
-import adopet.model.entity.Usuario;
 import adopet.model.service.AnuncioService;
 import adopet.model.service.EspecieService;
 import adopet.model.service.FotoService;
 import adopet.model.service.PessoaService;
-import adopet.model.service.PessoaTelefoneService;
 import adopet.model.service.TimelineService;
-import adopet.model.service.UsuarioService;
 import adopet.utils.IOUtils;
 import adopet.utils.TipoAnuncioEnum;
 import adopet.utils.TipoSexoEnum;
@@ -47,6 +42,7 @@ public class AnuncioController {
     public ModelAndView readByGerenciador() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         ModelAndView mv = new ModelAndView("/anuncio/list");
+        //Anuncios do gestor
         AnuncioService service = new AnuncioService();
         try {
             List<Anuncio> anuncioList = service.readByCriteria(new HashMap<Long, Object>(), null, null);
@@ -63,6 +59,34 @@ public class AnuncioController {
             ex.printStackTrace();
             //TODO resolver depois...
         }
+
+        //Anuncios com solicitacao
+        try {
+            //Pessoa
+            List<Pessoa> pessoaSolicitanteList = new ArrayList<>();
+            PessoaService pessoaService = new PessoaService();
+
+            //Anuncio
+            Map<Long, Object> criteriaSolicitacao = new HashMap<>();
+            List<Anuncio> anuncioListSolicitacao = service.readByCriteria(criteriaSolicitacao, null, null);
+            List<Anuncio> anuncioSolicitacaoUsuarioList = new ArrayList<Anuncio>();
+            HttpSession session = request.getSession();
+            String cpf = (String) session.getAttribute("pessoaCpfLogado");
+            for (Anuncio anuncio : anuncioListSolicitacao) {
+                if (anuncio.getPessoaAnuncianteCpf().equals(cpf) && anuncio.getPessoaAdotanteCpf() != null
+                        && !anuncio.getPessoaAdotanteCpf().isEmpty()
+                        && (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()))) {
+                    anuncioSolicitacaoUsuarioList.add(anuncio);
+                    pessoaSolicitanteList.add(pessoaService.readByCpf(anuncio.getPessoaAdotanteCpf()));
+                }
+            }
+            mv.addObject("anuncioSolicitacaoList", anuncioSolicitacaoUsuarioList);
+            mv.addObject("solicitanteList", pessoaSolicitanteList);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //TODO resolver depois...
+        }
+
         return mv;
     }
 
@@ -411,6 +435,145 @@ public class AnuncioController {
 
     }
 
+    /**
+     * Método responsável por tratar e carregar os recursos da solicitacao detalhadas
+     * @param id
+     * @return 
+     */
+    @RequestMapping(value = "/anuncio/{id}/readSolicitacao", method = RequestMethod.GET)
+    public ModelAndView readSolicitacao(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("/anuncio/readSolicitacao");
+
+        AnuncioService service = new AnuncioService();
+        EspecieService especieService = new EspecieService();
+
+        try {
+            Anuncio anuncio = service.readById(id);
+            Especie especie = especieService.readById(anuncio.getEspecie_id());
+            if (anuncio.getTipo().equals(TipoAnuncioEnum.adocao.name())) {
+                mv = new ModelAndView("/anuncio/adocao/readSolicitacao");
+            } else {
+                mv = new ModelAndView("/anuncio/perdido/readSolicitacao");
+            }
+
+            FotoService fotoService = new FotoService();
+            Foto foto = fotoService.readById(anuncio.getFoto_id());
+            //Pega o arquivo no diretório
+            byte[] byteArrayFoto = IOUtils.readFile(foto.getNome());
+            //Converte para o padrão Base64 de imagens
+            byte[] byteArrayFotoBase64 = Base64.getEncoder().encode(byteArrayFoto);
+            //Insere na lista
+            if (byteArrayFotoBase64 != null) {
+                mv.addObject("imageBase64", new String(byteArrayFotoBase64));
+            }
+
+            TimelineService timelineService = new TimelineService();
+            Map<Long, Object> criteriaTimeline = new HashMap<Long, Object>();
+
+            criteriaTimeline.put(TimelineCriteria.ANUNCIO_ID_EQ, id);
+            List<Timeline> timelineList = timelineService.readByCriteria(criteriaTimeline, null, null);
+            PessoaService pessoaService = new PessoaService();
+            List<Pessoa> pessoaList = pessoaService.readByCriteria(new HashMap<Long, Object>(), null, null);
+            List<Pessoa> pessoaTimilene = new ArrayList<>();
+            for (Timeline timeline1 : timelineList) {
+                for (Pessoa pessoa : pessoaList) {
+                    if (pessoa.getCpf().equals(timeline1.getPessoa_cpf())) {
+                        pessoaTimilene.add(pessoa);
+                        break;
+                    }
+                }
+            }
+            mv.addObject("pessoaTimeline", pessoaTimilene);
+            mv.addObject("timelineList", timelineList);
+            mv.addObject("anuncio", anuncio);
+            if (especie != null) {
+                mv.addObject("especie", especie);
+            }
+
+            //Pessoa solicitante
+            Pessoa solicitante = null;
+            solicitante = pessoaService.readByCpf(anuncio.getPessoaAdotanteCpf());
+            if (solicitante != null) {
+                mv.addObject("solicitante", solicitante);
+            }
+
+        } catch (Exception ex) {
+            //TODO resolver isso aqui...
+            ex.printStackTrace();
+        }
+
+        return mv;
+
+    }
+
+    /**
+     * Método que confirma a solicitacao pelo POST
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/anuncio/{id}/readSolicitacao/confirm", method = RequestMethod.POST)
+    public ModelAndView confirmSolicitacao(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("redirect:/anuncio/");
+        Anuncio anuncio = null;
+        AnuncioService anuncioService = new AnuncioService();
+        try {
+            anuncio = anuncioService.readById(id);
+            
+             //Teste se o usuario que alterou é o dono do anuncio
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpSession session = request.getSession();
+            String cpf = (String) session.getAttribute("pessoaCpfLogado");
+            
+            if (anuncio != null && anuncio.getPessoaAnuncianteCpf().equals(cpf)) {
+                if (anuncio.getTipo().equals(TipoAnuncioEnum.adocao.name())) {
+                    anuncio.setStatus(TipoStatusAnuncioEnum.adotado.name());
+                } else {
+                    anuncio.setStatus(TipoStatusAnuncioEnum.encontrado.name());
+                }
+                anuncioService.update(anuncio);
+
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(AnuncioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return mv;
+
+    }
+
+    /**
+     * Método que deleta a solicitacao pelo POST
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/anuncio/{id}/readSolicitacao/delete", method = RequestMethod.POST)
+    public ModelAndView deleteSolicitacao(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("redirect:/anuncio/");
+        Anuncio anuncio = null;
+        AnuncioService anuncioService = new AnuncioService();
+        try {
+            anuncio = anuncioService.readById(id);
+            
+            //Teste se o usuario que alterou é o dono do anuncio
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpSession session = request.getSession();
+            String cpf = (String) session.getAttribute("pessoaCpfLogado");
+            
+            if (anuncio != null && anuncio.getPessoaAnuncianteCpf().equals(cpf)) {
+                anuncio.setPessoaAdotanteCpf(null);
+
+            }
+            anuncioService.update(anuncio);
+        } catch (Exception ex) {
+            Logger.getLogger(AnuncioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return mv;
+
+    }
+
     @RequestMapping(value = "/anuncio/{id}/update", method = RequestMethod.GET)
     public ModelAndView update(@PathVariable Long id) {
         ModelAndView mv = new ModelAndView("/anuncio/form");
@@ -555,15 +718,16 @@ public class AnuncioController {
         try {
             Anuncio anuncio = service.readById(id);
             Especie especie = especieService.readById(anuncio.getEspecie_id());
-            if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.adocao.name())) {
-                anuncio.setStatus(TipoStatusAnuncioEnum.adotado.name());
-                mv = new ModelAndView("redirect:/adocao/");
-            } else if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.perdido.name())) {
-                anuncio.setStatus(TipoStatusAnuncioEnum.encontrado.name());
-                mv = new ModelAndView("redirect:/perdido/");
-            } else {
-                anuncio.setStatus(TipoStatusAnuncioEnum.pendente.name());
-            }
+            //Comentado para teste, ao clicar em adotar o status n deve mudar
+//            if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.adocao.name())) {
+//                anuncio.setStatus(TipoStatusAnuncioEnum.adotado.name());
+//                mv = new ModelAndView("redirect:/adocao/");
+//            } else if (anuncio.getStatus().equals(TipoStatusAnuncioEnum.pendente.name()) && anuncio.getTipo().equals(TipoAnuncioEnum.perdido.name())) {
+//                anuncio.setStatus(TipoStatusAnuncioEnum.encontrado.name());
+//                mv = new ModelAndView("redirect:/perdido/");
+//            } else {
+//                anuncio.setStatus(TipoStatusAnuncioEnum.pendente.name());
+//            }
             AnuncioService anuncioService = new AnuncioService();
 
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

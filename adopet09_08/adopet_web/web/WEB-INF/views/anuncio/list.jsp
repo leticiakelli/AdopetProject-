@@ -43,7 +43,6 @@
         </div>
         <div class ="container">  
             <div class="jumbotron">
-
                 <table class="table">
                     <tr>
                         <th>Id</th>
@@ -52,7 +51,6 @@
                         <th>Tipo</th>
                         <th>Menu</th>
                         <th>Status</th>
-
                     </tr>
                     <c:forEach items="${anuncioList}" var="anuncio">
                         <tr>
@@ -61,26 +59,48 @@
                             <td>${anuncio.sexo}</td> 
                             <td>${anuncio.tipo}</td>
                             <td><a class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/read"/>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
-                            <a class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/update"/>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
-                            <a  class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/delete"/>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
-                            
-                            <c:if test="${anuncio.status == 'encontrado'}"> 
-                                
-                                <td><a  class="btn btn-warning"  href="<c:url value="/anuncio/${anuncio.id}/status"/>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Encontrado</a></td>
+                                <a class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/update"/>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                                <a  class="btn btn-default" href="<c:url value="/anuncio/${anuncio.id}/delete"/>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                                    <c:if test="${anuncio.status == 'encontrado'}"> 
+
+                                <td><a  class="btn btn-warning"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Encontrado</a></td>
                             </c:if>
                             <c:if test="${anuncio.status == 'adotado'}"> 
-                                    
-                                <td><a  class="btn btn-warning"  href="<c:url value="/anuncio/${anuncio.id}/status"/>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Adotado</a></td>
+
+                                <td><a  class="btn btn-warning"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Adotado</a></td>
                             </c:if>
                             <c:if test="${anuncio.status == 'pendente'}"> 
-                             
-                                 <td><a  class="btn btn-success"  href="<c:url value="/anuncio/${anuncio.id}/status"/>"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Pendente</a></td>
-                            </c:if>
 
+                                <td><a  class="btn btn-success"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Pendente</a></td>
+                            </c:if>
                         </tr>
                     </c:forEach>
                 </table>
-            </div></div>
+            </div>
+        </div>
+
+        <div class ="container">  
+            <div class="jumbotron">
+                <table class="table">
+                    <tr>
+                        <th>Caracteristicas do animal</th>
+                        <th>Nome do Solicitante</th>
+                        <th>Tipo de Anuncio</th>
+                    </tr>
+                    <c:forEach items="${anuncioSolicitacaoList}" var="solicitacao" varStatus="loop">
+                        <tr>
+                            <td>${solicitacao.caracteristicas}</td>
+                            <td>${solicitanteList[loop.index].nome}</td>
+                            <td>${solicitacao.tipo}</td>
+                            <td>
+                                <a class="btn btn-default" href="<c:url value="/anuncio/${solicitacao.id}/readSolicitacao"/>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+
+                </table>
+            </div>
+        </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="<c:url value="/resources/js/jquery.js"/>"</script>

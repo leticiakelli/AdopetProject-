@@ -1,17 +1,22 @@
 package adopet.controller;
 
+import adopet.model.criteria.PessoaTelefoneCriteria;
 import adopet.model.criteria.TimelineCriteria;
 import adopet.utils.ConfiguracaoSistema;
 import adopet.model.entity.Anuncio;
 import adopet.model.entity.Especie;
 import adopet.model.entity.Foto;
 import adopet.model.entity.Pessoa;
+import adopet.model.entity.PessoaTelefone;
 import adopet.model.entity.Timeline;
+import adopet.model.entity.Usuario;
 import adopet.model.service.AnuncioService;
 import adopet.model.service.EspecieService;
 import adopet.model.service.FotoService;
 import adopet.model.service.PessoaService;
+import adopet.model.service.PessoaTelefoneService;
 import adopet.model.service.TimelineService;
+import adopet.model.service.UsuarioService;
 import adopet.utils.IOUtils;
 import adopet.utils.TipoAnuncioEnum;
 import adopet.utils.TipoSexoEnum;
@@ -493,7 +498,20 @@ public class AnuncioController {
             //Pessoa solicitante
             Pessoa solicitante = null;
             solicitante = pessoaService.readByCpf(anuncio.getPessoaAdotanteCpf());
-            if (solicitante != null) {
+            //Pessoa telefone 
+            PessoaTelefone telefoneSolicitante= null;
+            PessoaTelefoneService serviceTelefone = new PessoaTelefoneService();
+            telefoneSolicitante=serviceTelefone.readById(solicitante.getPessoaTelefone_id());
+            //Usuario 
+            Usuario usuarioSolicitante= null;
+            UsuarioService serviceUsuario= new UsuarioService();
+            usuarioSolicitante=serviceUsuario.readById(solicitante.getUsuario_id());
+            
+            
+            
+            if (solicitante != null && telefoneSolicitante != null && usuarioSolicitante != null  ) {
+                mv.addObject("usuario", usuarioSolicitante);
+                mv.addObject("telefone", telefoneSolicitante);
                 mv.addObject("solicitante", solicitante);
             }
 
@@ -669,7 +687,7 @@ public class AnuncioController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            mv = new ModelAndView("/anuncio/list");
+            mv = new ModelAndView("/anuncio/home");
         }
 
         return mv;
@@ -749,7 +767,7 @@ public class AnuncioController {
 
     }
 
-    @RequestMapping(value = "/anuncio/{id}/excluir", method = RequestMethod.GET)
+    @RequestMapping(value = "/anuncio/{id}/delete", method = RequestMethod.GET)
     public ModelAndView delete(@PathVariable Long id) {     //@PathVariable injeta o valor da url e converte o valor. OBS: o nome na url tem de ser igual ao do parametro
         ModelAndView mv = new ModelAndView("redirect:/anuncio");
 

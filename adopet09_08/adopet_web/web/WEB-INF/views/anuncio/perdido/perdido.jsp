@@ -88,22 +88,15 @@
                         <div class="col - xs - 5">
                             <h3 style="color:#000">Local: ${anuncio.local}</h3>
                         </div>
-                        
                     </div>
-                        
+
                     <div >
-                        <h3 style="color:#000">Pessoa solicitante: ${solicitante.nome}</h3>
-                    </div>
-                    
-                    <div >
-                        <h3 style="color:#000">Email do solicitante: ${usuario.email}</h3>
+                        <h3 style="color:#000">Pessoa Solicitante: ${solicitante.nome}</h3>
                     </div>
                     
                      <div >
                         <h3 style="color:#000">Telefone do solicitante: ${telefone.celular}</h3>
                     </div>
-                    
-                  
 
                     <!--daqui para cima vc mostra os dados do anuncio e da pessoa solicitante-->
 

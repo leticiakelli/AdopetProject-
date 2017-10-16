@@ -2,6 +2,10 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/Adopet/AdopetProject-/adopet09_08/adopet_web/web/WEB-INF/views/anuncio/adocao/readSolicitacao.jsp</file>
+            <file>file:/D:/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/controller/AnuncioController.java</file>
+            <file>file:/D:/Adopet/AdopetProject-/adopet09_08/adopet_web/src/java/adopet/controller/PessoaController.java</file>
+        </group>
     </open-files>
 </project-private>
